@@ -1255,19 +1255,19 @@
       let maxEnergyDisabled = (booster.maxEnergyUpCount||0) >= 10;
       let multiTapDisabled = (booster.multiTapCount||0) >= 3;
       let html = `<div class="booster-main">
-        <div class="booster-section" style="background-image:url('https://github.com/s42144/Shark-Bounty/blob/b42a5d053a17e56e330711df4f53226c276f9ac1/increase%20energy%20Background%20.png?raw=true')">
+        <div class="booster-section" style="background-image:url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true')">
           <div class="title">Increase Energy</div>
           <div class="price">Price: 10,000 SHB</div>
           <button class="buy-btn" id="buyEnergy" ${coinsEarned<10000||maxEnergyDisabled?'disabled':''}>Buy</button>
           <div class="desc">Increase max energy by 500 each purchase. (${10-(booster.maxEnergyUpCount||0)} left)</div>
         </div>
-        <div class="booster-section" style="background-image:url('https://github.com/s42144/Shark-Bounty/blob/8ddb11cc421bc4ed03c4c67eda63a7b77822449f/Allows%20multi%20tap%20%20background.png?raw=true')">
+        <div class="booster-section" style="background-image:url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true')">
           <div class="title">Allow Multi-finger Tapping</div>
           <div class="price">Price: 15,000 SHB</div>
           <button class="buy-btn" id="buyMultiTap" ${coinsEarned<15000||multiTapDisabled?'disabled':''}>Buy</button>
           <div class="desc">Buy once: 2 fingers. Buy again: 3, then 4 total. (${3-(booster.multiTapCount||0)} left)</div>
         </div>
-        <div class="booster-section" style="background-image:url('https://github.com/s42144/Shark-Bounty/blob/bec04630c61a45bb32f2bc5aaa1118a79ef22e5b/Income%20booster%20section%20background.png?raw=true')">
+        <div class="booster-section" style="background-image:url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true')">
           <div class="title">Income Booster</div>
           <div class="price">Price: 100,000 SHB</div>
           <button class="buy-btn" id="buyIncomeBooster" ${coinsEarned<100000||booster.incomeBooster?'disabled':''}>Buy</button>
