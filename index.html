@@ -108,35 +108,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 2400px;
-      height: 2400px;
-      margin: 0 auto 0 auto;
+      width: 100%;
+      max-width: 400px;
+      height: 400px;
+      margin: 20px auto 20px auto;
       z-index: 3;
       touch-action: manipulation;
       background: none;
       pointer-events: none;
     }
-    @media (max-width:2200px) {
-      .coin-btn-3d-wrap { width: 1600px; height: 1600px;}
-    }
-    @media (max-width:1600px) {
-      .coin-btn-3d-wrap { width: 1200px; height: 1200px;}
-    }
-    @media (max-width:1200px) {
-      .coin-btn-3d-wrap { width: 900px; height: 900px;}
-    }
-    @media (max-width:900px) {
-      .coin-btn-3d-wrap { width: 600px; height: 600px;}
-    }
-    @media (max-width:600px) {
-      .coin-btn-3d-wrap { width: 380px; height: 380px;}
-    }
     .coin-3d-anim {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 2200px;
-      height: 2200px;
+      width: 280px;
+      height: 280px;
       transform: translate(-50%, -50%);
       z-index: 2;
       pointer-events: auto;
@@ -144,33 +130,69 @@
       touch-action: manipulation;
       cursor: pointer;
       border-radius: 50%;
-      box-shadow: 0 10px 68px #27cdfc22, 0 0 0 16px #fff0;
-      transition: box-shadow .17s;
+      transition: transform .17s;
       border: none;
       outline: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       user-select: none;
+      object-fit: contain;
     }
-    .coin-3d-anim:focus { outline: none; }
-    @media (max-width:2200px) {
-      .coin-3d-anim { width: 1500px; height: 1500px;}
+    .coin-3d-anim:active {
+      transform: translate(-50%, -50%) scale(0.95);
     }
-    @media (max-width:1600px) {
-      .coin-3d-anim { width: 1100px; height: 1100px;}
+    .coin-glow-effect {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 320px;
+      height: 320px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(39,205,252,0.3) 0%, rgba(255,97,166,0.2) 50%, transparent 70%);
+      animation: glowPulse 2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
     }
-    @media (max-width:1200px) {
-      .coin-3d-anim { width: 800px; height: 800px;}
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
     }
-    @media (max-width:900px) {
-      .coin-3d-anim { width: 480px; height: 480px;}
+    .sparkle-container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 350px;
+      height: 350px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
     }
-    @media (max-width:600px) {
-      .coin-3d-anim { width: 280px; height: 280px;}
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkleAnim 3s ease-in-out infinite;
+      box-shadow: 0 0 10px #27cdfc, 0 0 20px #ff61a6;
     }
+    @keyframes sparkleAnim {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 0.8; transform: scale(1); }
+    }
+    .sparkle:nth-child(1) { top: 10%; left: 50%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 25%; left: 85%; animation-delay: 0.5s; }
+    .sparkle:nth-child(3) { top: 50%; left: 95%; animation-delay: 1s; }
+    .sparkle:nth-child(4) { top: 75%; left: 85%; animation-delay: 1.5s; }
+    .sparkle:nth-child(5) { top: 90%; left: 50%; animation-delay: 2s; }
+    .sparkle:nth-child(6) { top: 75%; left: 15%; animation-delay: 2.5s; }
+    .sparkle:nth-child(7) { top: 50%; left: 5%; animation-delay: 0.3s; }
+    .sparkle:nth-child(8) { top: 25%; left: 15%; animation-delay: 0.8s; }
     .tap-plus {
       position: absolute;
-      left: 50%; top: 56%;
-      transform: translate(-50%, -90%);
+      left: 50%; top: 30%;
+      transform: translate(-50%, -50%);
       color: #fff;
       font-size: 3.7rem;
       font-weight: bold;
@@ -696,6 +718,38 @@
       transition: filter .13s;
     }
     .redeem-btn:hover { filter: brightness(1.13); }
+    .profile-section-card {
+      margin: 22px auto;
+      background: var(--panel-bg);
+      border-radius: 18px;
+      padding: 20px 14px;
+      box-shadow: 0 2px 10px #27cdfc22;
+      border: 2px solid var(--accent2);
+      max-width: 390px;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .profile-section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 20px #27cdfc44;
+    }
+    .profile-section-img {
+      width: 100%;
+      max-width: 350px;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 2px solid var(--accent);
+    }
+    .profile-section-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-align: center;
+    }
     .ranking-main {
       padding-bottom: 38px;
     }
@@ -757,8 +811,10 @@
     @keyframes notifIn {0%{opacity:0;transform:scale(0.7) translateX(-50%);}100%{opacity:1;transform:scale(1) translateX(-50%);}}
     @media(max-width:1200px){
       .home-main{margin-top:0;}
-      .coin-btn-3d-wrap{width:900px;height:900px;}
-      .coin-3d-anim{width:800px;height:800px;}
+      .coin-btn-3d-wrap{max-width:350px;height:350px;}
+      .coin-3d-anim{width:250px;height:250px;}
+      .coin-glow-effect{width:280px;height:280px;}
+      .sparkle-container{width:300px;height:300px;}
       .home-balance{font-size:3.2rem;}
       .home-info-row{max-width:97vw;}
       .booster-main,.earn-main,.profile-main,.ranking-main{margin-top:31px;}
@@ -771,8 +827,10 @@
       .ranking-list{margin-top: 8px;}
     }
     @media(max-width:600px){
-      .coin-btn-3d-wrap{width:380px;height:380px;}
-      .coin-3d-anim{width:280px;height:280px;}
+      .coin-btn-3d-wrap{max-width:300px;height:300px;}
+      .coin-3d-anim{width:220px;height:220px;}
+      .coin-glow-effect{width:250px;height:250px;}
+      .sparkle-container{width:270px;height:270px;}
       .home-balance{font-size:1.5rem;padding:3px 13px;}
       .home-info-row{padding: 7px 7px;max-width:96vw;}
       .booster-main, .earn-main, .profile-main, .ranking-main {padding: 7px 0;}
@@ -782,8 +840,10 @@
       .avatar-img-pro{width:62px;height:62px;}
       .ref-link{font-size:0.87rem;}
       .ranking-list{margin-top: 6px;}
+      .tap-plus{font-size:2.5rem;}
     }
   </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
   <!-- Intro Video -->
@@ -841,6 +901,7 @@
     let referrals = { count: 0, eject: 0 };
     let redeemCodes = {};
     let adLoading = false;
+    let profileSections = [];
 
     // Helper: Get timestamp (seconds)
     function now() { return Math.floor(Date.now()/1000); }
@@ -971,7 +1032,18 @@
       let html = `<div class="home-main" id="homeMain">
         <div class="home-balance" id="homeBalance">${coinsEarned}</div>
         <div class="coin-btn-3d-wrap" id="coinWrap">
-          <canvas class="coin-3d-anim" id="coin3d"></canvas>
+          <div class="sparkle-container">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+          </div>
+          <div class="coin-glow-effect"></div>
+          <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" class="coin-3d-anim" id="coin3d" alt="Shark Coin" />
           <span class="tap-plus" id="tapPlus">+1</span>
         </div>
         <div class="home-info-row">
@@ -993,171 +1065,19 @@
         </div>
       </div>`;
       document.getElementById('main-content').innerHTML = html;
-      setupCoin3D();
-      setupEnergyRecovery();
       setupCoinTapping();
+      setupEnergyRecovery();
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
       document.getElementById('main-content').style.overflow = "hidden";
       document.getElementById('main-content').style.height = "100vh";
     }
 
-    // 2x Shark Coin Canvas Animation with tap logic
-    function setupCoin3D() {
-      const canvas = document.getElementById('coin3d');
-      if (!canvas) return;
-      const parent = canvas.parentElement;
-      let size = Math.min(parent.offsetWidth, parent.offsetHeight);
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      let w = canvas.width, h = canvas.height, r = Math.min(w,h)/2.15;
-      let anim;
-      function drawSharkCoin(ctx, cx, cy, r, t) {
-        ctx.save();
-        let grad = ctx.createRadialGradient(cx, cy, r*0.2, cx, cy, r*0.98);
-        grad.addColorStop(0, "#fffbe5");
-        grad.addColorStop(0.6, "#ffd23e");
-        grad.addColorStop(0.87, "#ffd23e");
-        grad.addColorStop(1, "#e2ad2f");
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, 2*Math.PI);
-        ctx.fillStyle = grad;
-        ctx.shadowColor = "#ffd23e";
-        ctx.shadowBlur = 50;
-        ctx.globalAlpha = 0.96;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-        ctx.shadowBlur = 0;
-        ctx.beginPath();
-        ctx.arc(cx, cy, r*0.88, 0, 2*Math.PI);
-        ctx.fillStyle = "#fffbee";
-        ctx.shadowColor = "#fffad2";
-        ctx.shadowBlur = 16;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        let wob = Math.sin(t/480)*r*0.03;
-        ctx.save();
-        ctx.translate(cx, cy + wob);
-        ctx.rotate(Math.sin(t/600)*0.04);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, r*0.42, r*0.28, -0.18, 0, 2*Math.PI);
-        ctx.fillStyle = "#5cc7f8";
-        ctx.shadowColor = "#046fa3";
-        ctx.shadowBlur = 18;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.beginPath();
-        ctx.ellipse(-r*0.06, r*0.04, r*0.24, r*0.13, -0.18, 0, 2*Math.PI);
-        ctx.fillStyle = "#e8f5fa";
-        ctx.fill();
-        ctx.save();
-        ctx.rotate(-0.65);
-        ctx.beginPath();
-        ctx.moveTo(-r*0.19, -r*0.20);
-        ctx.lineTo(-r*0.08, -r*0.37);
-        ctx.lineTo(0, -r*0.23);
-        ctx.closePath();
-        ctx.fillStyle = "#2784c7";
-        ctx.shadowColor = "#2a94d6";
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.save();
-        ctx.rotate(-0.16);
-        ctx.beginPath();
-        ctx.moveTo(r*0.37, r*0.08);
-        ctx.lineTo(r*0.59, r*0.21);
-        ctx.lineTo(r*0.44, -r*0.09);
-        ctx.closePath();
-        ctx.fillStyle = "#2784c7";
-        ctx.shadowColor = "#2a94d6";
-        ctx.shadowBlur = 7;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.save();
-        ctx.rotate(0.09);
-        ctx.beginPath();
-        ctx.moveTo(-r*0.12, r*0.19);
-        ctx.lineTo(-r*0.22, r*0.35);
-        ctx.lineTo(r*0.01, r*0.27);
-        ctx.closePath();
-        ctx.fillStyle = "#2784c7";
-        ctx.shadowColor = "#2a94d6";
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(-r*0.13, -r*0.05, r*0.033, 0, 2*Math.PI);
-        ctx.fillStyle = "#222";
-        ctx.shadowColor = "#fff";
-        ctx.shadowBlur = 2.5;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(-r*0.07, r*0.05, r*0.045, 0.18, 1.1, false);
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "#333";
-        ctx.shadowColor = "#fff";
-        ctx.shadowBlur = 2.5;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.save();
-        ctx.rotate(0.01);
-        ctx.beginPath();
-        ctx.moveTo(-r*0.03, r*0.08);
-        ctx.lineTo(-r*0.01, r*0.13);
-        ctx.lineTo(r*0.05, r*0.11);
-        ctx.closePath();
-        ctx.fillStyle = "#fff";
-        ctx.shadowBlur = 0;
-        ctx.fill();
-        ctx.restore();
-        ctx.restore();
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx - r*0.45, cy - r*0.38, r*0.19 + Math.sin(t/400)*2, 0, Math.PI*2);
-        ctx.globalAlpha = 0.23;
-        ctx.fillStyle = "#fff";
-        ctx.shadowColor = "#fff";
-        ctx.shadowBlur = 12;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-        ctx.restore();
-        ctx.save();
-        ctx.globalAlpha = 0.48;
-        for(let i=0; i<10; i++) {
-          let a = t/400 + i*Math.PI*0.2;
-          let x = cx + Math.cos(a)*r*0.95, y = cy + Math.sin(a)*r*0.95;
-          ctx.beginPath();
-          ctx.arc(x, y, 7 + 6*Math.abs(Math.sin(a+t/300)), 0, Math.PI*2);
-          ctx.fillStyle = "#fff";
-          ctx.shadowColor = "#ffd23e";
-          ctx.shadowBlur = 17;
-          ctx.fill();
-        }
-        ctx.shadowBlur = 0;
-        ctx.restore();
-        ctx.restore();
-      }
-      function animateRing() {
-        ctx.clearRect(0,0,w,h);
-        let cx = w/2, cy = h/2;
-        let t = Date.now();
-        drawSharkCoin(ctx, cx, cy, r, t);
-        anim = requestAnimationFrame(animateRing);
-      }
-      animateRing();
-      canvas._stopAnim = () => cancelAnimationFrame(anim);
+    // Coin tapping logic with PNG image
+    function setupCoinTapping() {
+      const coin = document.getElementById('coin3d');
+      if (!coin) return;
 
-      // Tap logic, allow only single/multi-finger as per booster.multiTap
       function tapCoin(tapCount) {
         if (booster.energy < tapCount) {
           notify('Not enough energy!');
@@ -1165,8 +1085,8 @@
           tapPlus.textContent = '!';
           tapPlus.style.color = '#ff5b5b';
           tapPlus.style.opacity = 1;
-          tapPlus.style.transform = 'translate(-50%, -160%) scale(1.17)';
-          setTimeout(()=>{tapPlus.style.opacity=0;tapPlus.style.transform='translate(-50%, -90%) scale(1)';tapPlus.style.color='#fff';},550);
+          tapPlus.style.transform = 'translate(-50%, -50%) scale(1.17)';
+          setTimeout(()=>{tapPlus.style.opacity=0;tapPlus.style.transform='translate(-50%, -50%) scale(1)';tapPlus.style.color='#fff';},550);
           return;
         }
         booster.energy -= tapCount;
@@ -1175,43 +1095,30 @@
         let tapPlus = document.getElementById('tapPlus');
         tapPlus.textContent = '+' + tapCount;
         tapPlus.style.opacity = 1;
-        tapPlus.style.transform = 'translate(-50%, -170%) scale(1.24)';
-        setTimeout(()=>{tapPlus.style.opacity=0;tapPlus.style.transform='translate(-50%, -90%) scale(1)';},420);
+        tapPlus.style.transform = 'translate(-50%, -50%) scale(1.24)';
+        setTimeout(()=>{tapPlus.style.opacity=0;tapPlus.style.transform='translate(-50%, -50%) scale(1)';},420);
         updateEnergyBar();
         document.getElementById('homeBalance').textContent = coinsEarned;
       }
 
-      let lastTap = 0;
-      canvas.onmousedown = function(e){e.preventDefault();};
-      canvas.onselectstart = function(){return false;};
-      canvas.style.webkitTapHighlightColor = "rgba(0,0,0,0)";
-      canvas.setAttribute('tabindex','-1');
+      coin.onmousedown = function(e){e.preventDefault();};
+      coin.onselectstart = function(){return false;};
+      coin.style.webkitTapHighlightColor = "rgba(0,0,0,0)";
+      coin.setAttribute('tabindex','-1');
+      
       // Desktop click
-      canvas.onclick = function(e) {
-        let rect = canvas.getBoundingClientRect();
-        let x = e.clientX - rect.left, y = e.clientY - rect.top;
-        let cx = canvas.width/2, cy = canvas.height/2;
-        let rr = Math.min(canvas.width, canvas.height)/2.15;
-        if ((x-cx)**2 + (y-cy)**2 < rr**2) tapCoin(booster.multiTap || 1);
+      coin.onclick = function(e) {
+        tapCoin(booster.multiTap || 1);
       };
+      
       // Touch - multi-finger
-      canvas.ontouchstart = function(e){
+      coin.ontouchstart = function(e){
+        e.preventDefault();
         let touches = e.touches.length;
-        // Allow multi-finger tap only if unlocked and not more than booster.multiTap
         let tapCount = Math.min(touches, booster.multiTap || 1);
-        let touch = e.touches[0];
-        let rect = canvas.getBoundingClientRect();
-        let x = touch.clientX - rect.left, y = touch.clientY - rect.top;
-        let cx = canvas.width/2, cy = canvas.height/2;
-        let rr = Math.min(canvas.width, canvas.height)/2.15;
-        if ((x-cx)**2 + (y-cy)**2 < rr**2) tapCoin(tapCount);
+        tapCoin(tapCount);
       };
     }
-    function destroyCoin3D() {
-      const canvas = document.getElementById('coin3d');
-      if(canvas && canvas._stopAnim) canvas._stopAnim();
-    }
-    function setupCoinTapping(){}
 
     function updateEnergyBar(){
       let label = document.getElementById('energyLabel');
@@ -1229,7 +1136,6 @@
     function setupEnergyRecovery(){
       if(energyTimer) clearInterval(energyTimer);
       energyTimer = setInterval(()=>{
-        // Recover 0.5 per sec up to maxEnergy, store in DB
         if(booster.energy < booster.maxEnergy){
           booster.energy += 0.5;
           booster.energy = Math.min(booster.energy, booster.maxEnergy);
@@ -1338,7 +1244,6 @@
       document.getElementById('main-content').innerHTML = html;
       setupShowAd();
       loadTasksEarn();
-      // Graph
       setTimeout(function(){
         let ctx = document.getElementById('adGraph').getContext('2d');
         let chart = new Chart(ctx, {
@@ -1420,82 +1325,113 @@
         });
       });
     }
+
+    // Load profile sections from Firebase
+    function loadProfileSections(){
+      return db.ref('profileSections').once('value').then(snap=>{
+        let sections = snap.val()||{};
+        profileSections = [];
+        Object.keys(sections).forEach(sid=>{
+          profileSections.push({
+            id: sid,
+            name: sections[sid].name,
+            image: sections[sid].image,
+            link: sections[sid].link
+          });
+        });
+      });
+    }
+
     function renderProfile(){
       let avatarURL = "https://github.com/akhterefti-del/Shark/blob/43434e64fd7f0a55152c5e982b6a95f2c0496c5b/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
-      db.ref('users')
-        .orderByChild('referrals')
-        .equalTo(userId)
-        .once('value')
-        .then(refSnap => {
-          let myRefCount = userData.referrals || 0;
-          let myEjectCount = userData.eject || 0;
-          let html = `<div class="profile-main">
-            <div class="avatar-glow">
-              <img src="${avatarURL}" class="avatar-img-pro" alt="Avatar"/>
-            </div>
-            <div>
-              <span class="userid-pro">ID: ${userId}</span>
-              <button class="copy-btn-pro" id="copyUidBtn"><img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" /></button>
-            </div>
-            <div class="profile-divider"></div>
-            <div class="profile-wallet-box">
-              <span class="wallet-label">TON wallet:</span>
-              <form class="ton-form-pro" onsubmit="return false;">
-                <input class="ton-input-pro" id="tonInput" placeholder="Enter TON Wallet Address" value="${userData.ton||''}" />
-                <button class="ton-save-btn-pro" id="tonSaveBtn">Save</button>
-              </form>
-            </div>
-            <div class="referral-section">
-              <div style="font-weight:bold;margin-bottom:6px;">Referrals</div>
-              <div class="ref-link-box">
-                <span class="ref-link" id="refLink">https://t.me/SharkBountybot?start=r${userId}</span>
-                <button class="ref-copy-btn-pro" id="refCopyBtn"><img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" /></button>
-              </div>
-              <div class="ref-counts">
-                <span>Total Referrals: <b id="refCount">${myRefCount}</b></span>
-                <span>Eject Referrals: <b id="ejectCount">${myEjectCount}</b></span>
-              </div>
-            </div>
-            <div class="redeem-profile-box">
-              <input class="redeem-input" id="redeemInput" maxlength="4" placeholder="Enter 4-digit code" />
-              <button class="redeem-btn" id="redeemBtn">Redeem</button>
-            </div>
-          </div>`;
-          document.getElementById('main-content').innerHTML = html;
-          document.getElementById('copyUidBtn').onclick = function(){
-            navigator.clipboard.writeText(userId).then(()=>notify('User ID copied!'));
-          };
-          document.getElementById('refCopyBtn').onclick = function(){
-            navigator.clipboard.writeText(document.getElementById('refLink').textContent).then(()=>notify('Referral link copied!'));
-          };
-          document.getElementById('refLink').onclick = function(){
-            navigator.clipboard.writeText(this.textContent).then(()=>notify('Referral link copied!'));
-          };
-          document.getElementById('tonSaveBtn').onclick = function(){
-            let val = document.getElementById('tonInput').value.trim();
-            if(val.length<10){notify('Invalid TON wallet!');return;}
-            updateUserData({ton:val});
-            notify('TON wallet saved!');
-          };
-          document.getElementById('redeemBtn').onclick = function(){
-            let code = document.getElementById('redeemInput').value.trim();
-            if(code.length!==4){notify('Enter valid 4-digit code!');return;}
-            db.ref('redeemCodes/'+code).once('value').then(snap=>{
-              if(snap.exists()){
-                let amount = Math.floor(Math.random()*(10000-500+1))+500;
-                coinsEarned += amount;
-                updateUserData({balance:coinsEarned});
-                db.ref('redeemCodes/'+code).remove();
-                notify('+'+amount+' SHB redeemed!');
-                renderProfile();
-              }else{
-                notify('Invalid or already used code!');
-              }
+      
+      loadProfileSections().then(()=>{
+        db.ref('users')
+          .orderByChild('referrals')
+          .equalTo(userId)
+          .once('value')
+          .then(refSnap => {
+            let myRefCount = userData.referrals || 0;
+            let myEjectCount = userData.eject || 0;
+            
+            let sectionsHTML = '';
+            profileSections.forEach(section => {
+              sectionsHTML += `<div class="profile-section-card" onclick="window.open('${section.link}', '_blank')">
+                <img src="${section.image}" class="profile-section-img" alt="${section.name}" />
+                <div class="profile-section-title">${section.name}</div>
+              </div>`;
             });
-          };
-        });
+            
+            let html = `<div class="profile-main">
+              <div class="avatar-glow">
+                <img src="${avatarURL}" class="avatar-img-pro" alt="Avatar"/>
+              </div>
+              <div>
+                <span class="userid-pro">ID: ${userId}</span>
+                <button class="copy-btn-pro" id="copyUidBtn"><img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" /></button>
+              </div>
+              <div class="profile-divider"></div>
+              <div class="profile-wallet-box">
+                <span class="wallet-label">TON wallet:</span>
+                <form class="ton-form-pro" onsubmit="return false;">
+                  <input class="ton-input-pro" id="tonInput" placeholder="Enter TON Wallet Address" value="${userData.ton||''}" />
+                  <button class="ton-save-btn-pro" id="tonSaveBtn">Save</button>
+                </form>
+              </div>
+              <div class="referral-section">
+                <div style="font-weight:bold;margin-bottom:6px;">Referrals</div>
+                <div class="ref-link-box">
+                  <span class="ref-link" id="refLink">https://t.me/SharkBountybot?start=r${userId}</span>
+                  <button class="ref-copy-btn-pro" id="refCopyBtn"><img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" /></button>
+                </div>
+                <div class="ref-counts">
+                  <span>Total Referrals: <b id="refCount">${myRefCount}</b></span>
+                  <span>Eject Referrals: <b id="ejectCount">${myEjectCount}</b></span>
+                </div>
+              </div>
+              ${sectionsHTML}
+              <div class="redeem-profile-box">
+                <input class="redeem-input" id="redeemInput" maxlength="4" placeholder="Enter 4-digit code" />
+                <button class="redeem-btn" id="redeemBtn">Redeem</button>
+              </div>
+            </div>`;
+            document.getElementById('main-content').innerHTML = html;
+            document.getElementById('copyUidBtn').onclick = function(){
+              navigator.clipboard.writeText(userId).then(()=>notify('User ID copied!'));
+            };
+            document.getElementById('refCopyBtn').onclick = function(){
+              navigator.clipboard.writeText(document.getElementById('refLink').textContent).then(()=>notify('Referral link copied!'));
+            };
+            document.getElementById('refLink').onclick = function(){
+              navigator.clipboard.writeText(this.textContent).then(()=>notify('Referral link copied!'));
+            };
+            document.getElementById('tonSaveBtn').onclick = function(){
+              let val = document.getElementById('tonInput').value.trim();
+              if(val.length<10){notify('Invalid TON wallet!');return;}
+              updateUserData({ton:val});
+              notify('TON wallet saved!');
+            };
+            document.getElementById('redeemBtn').onclick = function(){
+              let code = document.getElementById('redeemInput').value.trim();
+              if(code.length!==4){notify('Enter valid 4-digit code!');return;}
+              db.ref('redeemCodes/'+code).once('value').then(snap=>{
+                if(snap.exists()){
+                  let amount = Math.floor(Math.random()*(10000-500+1))+500;
+                  coinsEarned += amount;
+                  updateUserData({balance:coinsEarned});
+                  db.ref('redeemCodes/'+code).remove();
+                  notify('+'+amount+' SHB redeemed!');
+                  renderProfile();
+                }else{
+                  notify('Invalid or already used code!');
+                }
+              });
+            };
+          });
+      });
     }
-    // LIVE RANKING SECTION — top 200, show my position, no total users, NO top title
+
+    // LIVE RANKING SECTION
     let rankingListener = null;
     function renderRanking(){
       document.getElementById('main-content').innerHTML = `<div class="ranking-main">
@@ -1529,9 +1465,9 @@
       usersRef.on('value', updateRankingList);
       rankingListener = usersRef;
     }
+
     document.querySelectorAll('.nav-btn').forEach(btn=>{
       btn.onclick = function(){
-        if (!btn.classList.contains('active') && document.querySelector('.home-main')) destroyCoin3D();
         if(btn.dataset.tab !== "home"){
           document.body.style.overflow = "";
           document.documentElement.style.overflow = "";
@@ -1541,6 +1477,7 @@
         showTab(btn.dataset.tab);
       }
     });
+
     document.getElementById('intro-video').addEventListener('ended',()=>{
       document.getElementById('intro-video').style.display='none';
       document.getElementById('app').style.display='block';
@@ -1558,6 +1495,24 @@
         loadUserData();
       }
     }
+
+    // Initialize default profile sections if not exist
+    db.ref('profileSections').once('value').then(snap=>{
+      if(!snap.exists()){
+        db.ref('profileSections').set({
+          roadmap: {
+            name: 'RoadMap',
+            image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/readmap.png?raw=true',
+            link: '#######Link here'
+          },
+          presale: {
+            name: 'Presale',
+            image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/presale.png?raw=true',
+            link: '#######Link here'
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>
