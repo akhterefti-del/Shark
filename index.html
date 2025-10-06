@@ -149,7 +149,7 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.2) 40%, transparent 70%);
+      background: radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, transparent 70%);
       animation: pulse 2s ease-in-out infinite;
     }
     
@@ -326,6 +326,9 @@
       box-shadow: var(--shadow-md);
       position: relative;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     
     .booster-card::before {
@@ -334,8 +337,14 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+    
+    .booster-card > * {
+      position: relative;
+      z-index: 2;
     }
     
     .booster-header {
@@ -349,12 +358,13 @@
       width: 56px;
       height: 56px;
       border-radius: 14px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 28px;
       box-shadow: var(--shadow-md);
+      backdrop-filter: blur(10px);
     }
     
     .booster-info {
@@ -553,9 +563,13 @@
     }
     
     /* Profile Section */
+    .profile-main {
+      padding: 20px 0 40px;
+    }
+    
     .profile-header {
       text-align: center;
-      padding: 24px 0;
+      padding: 24px 0 20px;
     }
     
     .avatar-container {
@@ -624,7 +638,7 @@
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 20px;
+      padding: 24px;
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow-md);
@@ -638,14 +652,14 @@
       text-align: center;
     }
     
-    .input-group {
+    .wallet-input-group {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      flex-direction: column;
+      gap: 12px;
     }
     
     .input-field {
-      flex: 1;
+      width: 100%;
       padding: 12px 16px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
@@ -667,6 +681,7 @@
     }
     
     .btn-secondary {
+      width: 100%;
       padding: 12px 24px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
@@ -767,6 +782,38 @@
       font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
+    }
+    
+    .redeem-input-group {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .redeem-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+      text-align: center;
+      letter-spacing: 4px;
+      font-weight: 700;
+    }
+    
+    .redeem-input:focus {
+      border-color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .redeem-input::placeholder {
+      color: var(--text-secondary);
+      letter-spacing: normal;
+      font-weight: 400;
     }
     
     /* Ranking Section */
@@ -894,6 +941,20 @@
       
       .stat-value {
         font-size: 18px;
+      }
+      
+      .wallet-input-group {
+        gap: 8px;
+      }
+      
+      .input-field {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      
+      .btn-secondary {
+        padding: 10px 20px;
+        font-size: 13px;
       }
     }
   </style>
@@ -1296,7 +1357,7 @@
             <div class="section-subtitle">Upgrade your earning power</div>
           </div>
           
-          <div class="booster-card">
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
             <div class="booster-header">
               <div class="booster-icon">⚡</div>
               <div class="booster-info">
@@ -1315,7 +1376,7 @@
             </button>
           </div>
           
-          <div class="booster-card">
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
             <div class="booster-header">
               <div class="booster-icon">👆</div>
               <div class="booster-info">
@@ -1334,7 +1395,7 @@
             </button>
           </div>
           
-          <div class="booster-card">
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
             <div class="booster-header">
               <div class="booster-icon">💰</div>
               <div class="booster-info">
@@ -1674,7 +1735,7 @@
                 
                 <div class="profile-card">
                   <div class="card-title">TON Wallet</div>
-                  <div class="input-group">
+                  <div class="wallet-input-group">
                     <input type="text" 
                            class="input-field" 
                            id="tonWallet" 
@@ -1709,9 +1770,9 @@
                 
                 <div class="profile-card">
                   <div class="card-title">Redeem Code</div>
-                  <div class="input-group">
+                  <div class="redeem-input-group">
                     <input type="text" 
-                           class="input-field" 
+                           class="redeem-input" 
                            id="redeemCode" 
                            placeholder="Enter 4-digit code" 
                            maxlength="4" />
