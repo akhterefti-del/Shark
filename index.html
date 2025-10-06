@@ -2,62 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-  <title>Shark Bounty | Earn SHB</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
+  <title>Shark Bounty | Earn SHB Tokens</title>
   <link rel="icon" href="https://github.com/s42144/Shark-Bounty/blob/dc7c6b7451be7e4767f4c84bdecf7dfed3082bed/HOME.png?raw=true" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="9970324" data-sdk="show_9970324"></script>
-  <!-- Firebase App -->
+  
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-    
-    :root {
-      --primary-dark: #0a0e27;
-      --secondary-dark: #151932;
-      --accent-blue: #00d4ff;
-      --accent-purple: #7b2cbf;
-      --accent-pink: #e91e63;
-      --accent-gold: #ffd700;
-      --card-bg: rgba(21, 25, 50, 0.85);
-      --card-border: rgba(0, 212, 255, 0.2);
-      --text-primary: #ffffff;
-      --text-secondary: #b8c5d6;
-      --success: #00ff88;
-      --warning: #ffaa00;
-      --danger: #ff3366;
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
-    }
-    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --dark-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --text-primary: #ffffff;
+      --text-secondary: #b8c5d6;
+      --accent-blue: #4facfe;
+      --accent-purple: #764ba2;
+      --accent-pink: #f5576c;
+      --accent-cyan: #00f2fe;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+      --shadow-glow: 0 0 20px rgba(79, 172, 254, 0.3);
     }
     
     html, body {
+      width: 100%;
       height: 100%;
-      width: 100vw;
-      font-family: 'Poppins', sans-serif;
-      background: var(--primary-dark);
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
       color: var(--text-primary);
       overflow-x: hidden;
-      touch-action: manipulation;
-    }
-    
-    body {
-      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
-      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
     /* Intro Video */
@@ -72,283 +69,45 @@
       background: #000;
     }
     
-    /* App Container */
+    /* Main App Container */
     #app {
       display: none;
-      width: 100vw;
       min-height: 100vh;
       padding-bottom: 80px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      background-attachment: fixed;
     }
     
     #main-content {
       width: 100%;
-      max-width: 1200px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 16px;
     }
     
-    /* ========== HOME SECTION ========== */
+    /* Home Section */
     .home-main {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: calc(100vh - 100px);
-      padding: 20px;
-      position: relative;
+      min-height: calc(100vh - 80px);
+      padding: 20px 0;
     }
     
-    /* Animated Background */
-    .home-main::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-      animation: bgPulse 10s ease-in-out infinite;
-    }
-    
-    @keyframes bgPulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-    
-    /* Balance Display */
-    .home-balance-container {
-      position: relative;
-      z-index: 10;
-      margin: 30px 0 20px;
+    .balance-card {
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      text-align: center;
     }
     
     .balance-label {
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-    }
-    
-    .home-balance {
-      font-size: 4rem;
-      font-weight: 900;
-      text-align: center;
-      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 4px 12px rgba(0, 212, 255, 0.3));
-      position: relative;
-      padding: 10px 40px;
-      border-radius: 20px;
-      background-color: rgba(0, 212, 255, 0.05);
-      border: 2px solid rgba(0, 212, 255, 0.2);
-    }
-    
-    .balance-shb {
-      font-size: 1.5rem;
-      margin-left: 10px;
-      opacity: 0.8;
-    }
-    
-    /* Coin Button Container */
-    .coin-container {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 30px 0;
-      z-index: 5;
-    }
-    
-    /* Animated Rings */
-    .coin-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 2px solid;
-      animation: ringPulse 3s ease-in-out infinite;
-    }
-    
-    .coin-ring-1 {
-      width: 320px;
-      height: 320px;
-      border-color: rgba(0, 212, 255, 0.3);
-      animation-delay: 0s;
-    }
-    
-    .coin-ring-2 {
-      width: 360px;
-      height: 360px;
-      border-color: rgba(123, 44, 191, 0.2);
-      animation-delay: 1s;
-    }
-    
-    .coin-ring-3 {
-      width: 400px;
-      height: 400px;
-      border-color: rgba(233, 30, 99, 0.1);
-      animation-delay: 2s;
-    }
-    
-    @keyframes ringPulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.3;
-      }
-      50% {
-        transform: scale(1.1);
-        opacity: 0.6;
-      }
-    }
-    
-    /* Coin Glow */
-    .coin-glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(123, 44, 191, 0.2) 50%, transparent 70%);
-      animation: glowPulse 2s ease-in-out infinite;
-      pointer-events: none;
-    }
-    
-    @keyframes glowPulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.6;
-      }
-      50% {
-        transform: scale(1.15);
-        opacity: 1;
-      }
-    }
-    
-    /* Coin Image */
-    .coin-btn {
-      position: relative;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.1s ease;
-      z-index: 10;
-      filter: drop-shadow(0 8px 24px rgba(0, 212, 255, 0.4));
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    
-    .coin-btn:active {
-      transform: scale(0.95);
-    }
-    
-    /* Tap Plus Animation */
-    .tap-plus {
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
-      font-weight: 900;
-      color: var(--accent-gold);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 20;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
-                   0 0 40px rgba(255, 215, 0, 0.4);
-      transition: all 0.3s ease;
-    }
-    
-    /* Sparkles */
-    .sparkle-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-    
-    .sparkle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: var(--accent-gold);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-gold);
-      animation: sparkleFloat 3s ease-in-out infinite;
-      opacity: 0;
-    }
-    
-    @keyframes sparkleFloat {
-      0%, 100% {
-        opacity: 0;
-        transform: translateY(0) scale(0);
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(-30px) scale(1);
-      }
-    }
-    
-    .sparkle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
-    .sparkle:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; }
-    .sparkle:nth-child(3) { top: 50%; left: 90%; animation-delay: 1s; }
-    .sparkle:nth-child(4) { top: 80%; left: 70%; animation-delay: 1.5s; }
-    .sparkle:nth-child(5) { top: 90%; left: 30%; animation-delay: 2s; }
-    .sparkle:nth-child(6) { top: 70%; left: 10%; animation-delay: 2.5s; }
-    
-    /* Info Cards */
-    .home-info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      width: 100%;
-      max-width: 600px;
-      margin-top: 30px;
-      z-index: 10;
-    }
-    
-    .info-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .info-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--gradient-accent);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-    
-    .info-card:hover::before {
-      transform: scaleX(1);
-    }
-    
-    .info-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-glow);
-      border-color: var(--accent-blue);
-    }
-    
-    .info-label {
-      font-size: 0.85rem;
+      font-size: 14px;
       font-weight: 500;
       color: var(--text-secondary);
       text-transform: uppercase;
@@ -356,33 +115,139 @@
       margin-bottom: 8px;
     }
     
-    .info-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--accent-blue);
-      margin-bottom: 5px;
+    .balance-amount {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 4px;
     }
     
-    .info-desc {
-      font-size: 0.75rem;
+    .balance-currency {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+    }
+    
+    /* Coin Tap Area */
+    .coin-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 30px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .coin-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.2) 40%, transparent 70%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    
+    .coin-image {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      z-index: 2;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+    }
+    
+    .coin-image:active {
+      transform: scale(0.95);
+    }
+    
+    .tap-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .tap-indicator.show {
+      opacity: 1;
+      transform: translate(-50%, -70%);
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
       color: var(--text-secondary);
-      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
     
-    /* ========== NAVIGATION BAR ========== */
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .stat-desc {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
+    /* Navigation Bar */
     .nav-bar {
       position: fixed;
       bottom: 0;
       left: 0;
-      right: 0;
-      background: rgba(10, 14, 39, 0.95);
+      width: 100%;
+      background: rgba(30, 60, 114, 0.95);
       backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0, 212, 255, 0.2);
+      border-top: 1px solid var(--card-border);
       display: flex;
       justify-content: space-around;
-      padding: 12px 0;
+      padding: 12px 0 8px;
       z-index: 1000;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
     }
     
     .nav-btn {
@@ -392,97 +257,73 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       transition: all 0.3s ease;
       padding: 8px;
       border-radius: 12px;
-      position: relative;
-      overflow: hidden;
     }
     
-    .nav-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--gradient-accent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      border-radius: 12px;
-    }
-    
-    .nav-btn.active::before {
-      opacity: 0.15;
-    }
-    
-    .nav-btn img {
+    .nav-icon {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: 10px;
       transition: all 0.3s ease;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .nav-btn.active img {
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 8px var(--accent-blue));
+      filter: grayscale(100%) brightness(0.7);
     }
     
     .nav-label {
-      font-size: 0.7rem;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-secondary);
-      transition: color 0.3s ease;
-      position: relative;
-      z-index: 1;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn.active .nav-icon {
+      filter: grayscale(0%) brightness(1);
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
     }
     
     .nav-btn.active .nav-label {
-      color: var(--accent-blue);
+      color: var(--accent-cyan);
     }
     
-    /* ========== BOOSTER SECTION ========== */
-    .booster-main,
-    .earn-main,
-    .profile-main,
-    .ranking-main {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
+    /* Section Headers */
     .section-header {
+      width: 100%;
       text-align: center;
-      margin-bottom: 30px;
+      padding: 24px 0 20px;
     }
     
     .section-title {
-      font-size: 2rem;
+      font-size: 28px;
       font-weight: 800;
-      background: var(--gradient-accent);
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
     .section-subtitle {
-      font-size: 0.9rem;
+      font-size: 14px;
       color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
+    /* Booster Section */
+    .booster-main, .earn-main, .profile-main, .ranking-main {
+      padding: 20px 0 40px;
     }
     
     .booster-card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 25px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
       position: relative;
       overflow: hidden;
     }
@@ -492,33 +333,28 @@
       position: absolute;
       top: 0;
       left: 0;
-      right: 0;
+      width: 100%;
       height: 4px;
-      background: var(--gradient-primary);
-    }
-    
-    .booster-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-glow);
-      border-color: var(--accent-blue);
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
     }
     
     .booster-header {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     
     .booster-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      background: var(--gradient-accent);
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 28px;
+      box-shadow: var(--shadow-md);
     }
     
     .booster-info {
@@ -526,599 +362,502 @@
     }
     
     .booster-title {
-      font-size: 1.3rem;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
     
     .booster-price {
-      font-size: 1rem;
+      font-size: 14px;
       font-weight: 600;
-      color: var(--accent-gold);
+      color: var(--accent-cyan);
     }
     
     .booster-desc {
-      font-size: 0.9rem;
+      font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.5;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
     
-    .booster-stats {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    
-    .stat-badge {
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      border-radius: 8px;
-      padding: 5px 12px;
-      font-size: 0.8rem;
-      color: var(--accent-blue);
+    .booster-progress {
+      font-size: 12px;
+      color: var(--accent-pink);
       font-weight: 600;
+      margin-bottom: 12px;
     }
     
-    .buy-btn {
+    .btn-primary {
       width: 100%;
-      padding: 15px;
-      background: var(--gradient-accent);
+      padding: 14px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       border: none;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 16px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+      letter-spacing: 0.5px;
     }
     
-    .buy-btn:hover:not(:disabled) {
+    .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+      box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
     }
     
-    .buy-btn:active:not(:disabled) {
+    .btn-primary:active {
       transform: translateY(0);
     }
     
-    .buy-btn:disabled {
+    .btn-primary:disabled {
       background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.4);
       cursor: not-allowed;
       box-shadow: none;
     }
     
-    /* ========== EARN SECTION ========== */
-    .stats-grid {
+    /* Earn Section */
+    .chart-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .stats-row {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
     }
     
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px 8px;
       text-align: center;
-      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .stat-label {
-      font-size: 0.85rem;
+    .stat-box-label {
+      font-size: 10px;
       color: var(--text-secondary);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent-blue);
+    .stat-box-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-cyan);
     }
     
-    .chart-container {
+    .ad-card {
       background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 30px;
-      backdrop-filter: blur(10px);
-    }
-    
-    .ad-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 25px;
+      box-shadow: var(--shadow-md);
       text-align: center;
-      margin-bottom: 30px;
-      backdrop-filter: blur(10px);
     }
     
     .ad-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 15px;
-      color: var(--text-primary);
-    }
-    
-    .show-ad-btn {
-      width: 100%;
-      padding: 15px;
-      background: var(--gradient-secondary);
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+      margin-bottom: 12px;
     }
     
-    .show-ad-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+    .ad-reward {
+      font-size: 14px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      margin-bottom: 16px;
     }
     
-    .show-ad-btn:disabled {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.3);
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    
-    /* Task Cards */
+    /* Task Card */
     .task-card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 15px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
       display: flex;
       align-items: center;
-      gap: 15px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      gap: 16px;
     }
     
-    .task-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-glow);
-      border-color: var(--accent-blue);
-    }
-    
-    .task-photo {
-      width: 60px;
-      height: 60px;
+    .task-image {
+      width: 56px;
+      height: 56px;
       border-radius: 12px;
       object-fit: cover;
-      border: 2px solid var(--accent-blue);
+      border: 2px solid var(--accent-cyan);
     }
     
     .task-info {
       flex: 1;
     }
     
-    .task-title {
-      font-size: 1.1rem;
+    .task-name {
+      font-size: 15px;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
     
-    .task-amount {
-      font-size: 0.9rem;
+    .task-reward {
+      font-size: 13px;
       font-weight: 600;
-      color: var(--accent-gold);
+      color: var(--accent-cyan);
     }
     
     .task-btn {
-      padding: 10px 20px;
-      background: var(--gradient-accent);
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       border: none;
       border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .task-btn:hover:not(.completed) {
-      transform: scale(1.05);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     .task-btn.completed {
-      background: rgba(0, 255, 136, 0.2);
-      color: var(--success);
-      cursor: default;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
     }
     
-    /* ========== PROFILE SECTION ========== */
-    .profile-main {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
+    /* Profile Section */
     .profile-header {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 30px;
       text-align: center;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .profile-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 100px;
-      background: var(--gradient-primary);
-      opacity: 0.1;
+      padding: 24px 0;
     }
     
     .avatar-container {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-    
-    .avatar-img {
       width: 120px;
       height: 120px;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+    
+    .avatar-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      border: 4px solid var(--accent-blue);
-      box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+      background: radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, transparent 70%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .avatar-image {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid var(--accent-cyan);
       object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
     
     .user-id-box {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      border-radius: 12px;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-    }
-    
-    .user-id {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent-blue);
-      letter-spacing: 1px;
-    }
-    
-    .copy-btn {
-      background: var(--gradient-accent);
-      border: none;
-      border-radius: 8px;
-      padding: 8px 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .copy-btn img {
-      width: 16px;
-      height: 16px;
-      display: block;
-    }
-    
-    .copy-btn:hover {
-      transform: scale(1.1);
-    }
-    
-    .wallet-section,
-    .referral-section,
-    .redeem-section {
+      gap: 8px;
       background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: 8px 16px;
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
+      margin-bottom: 8px;
     }
     
-    .section-label {
-      font-size: 1.1rem;
+    .user-id-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    .user-id-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .copy-icon {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    
+    .copy-icon:hover {
+      opacity: 1;
+    }
+    
+    .profile-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .card-title {
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 15px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .input-group {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
     
-    .section-icon {
-      font-size: 1.5rem;
-    }
-    
-    .wallet-form {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .wallet-input {
+    .input-field {
       flex: 1;
-      padding: 12px 15px;
+      padding: 12px 16px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(0, 212, 255, 0.3);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
+      font-size: 14px;
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
       outline: none;
       transition: all 0.3s ease;
     }
     
-    .wallet-input:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    .input-field:focus {
+      border-color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.08);
     }
     
-    .save-btn {
-      padding: 12px 25px;
-      background: var(--gradient-accent);
+    .input-field::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .btn-secondary {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
       border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
-      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
-    .save-btn:hover {
-      transform: scale(1.05);
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
     }
     
-    .ref-link-box {
+    .referral-link-box {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
     }
     
-    .ref-link {
+    .referral-link {
       flex: 1;
-      padding: 12px 15px;
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      border-radius: 10px;
-      color: var(--accent-blue);
-      font-size: 0.85rem;
+      font-size: 12px;
+      color: var(--accent-cyan);
       font-weight: 600;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.3s ease;
     }
     
-    .ref-link:hover {
-      background: rgba(0, 212, 255, 0.2);
-    }
-    
-    .ref-stats {
+    .referral-stats {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 15px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
     }
     
-    .ref-stat {
+    .referral-stat {
       text-align: center;
-      padding: 15px;
-      background: rgba(0, 212, 255, 0.05);
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      border-radius: 10px;
-    }
-    
-    .ref-stat-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 5px;
-    }
-    
-    .ref-stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent-blue);
-    }
-    
-    .redeem-form {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .redeem-input {
-      flex: 1;
-      padding: 12px 15px;
+      padding: 12px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 215, 0, 0.3);
       border-radius: 10px;
-      color: var(--text-primary);
-      font-size: 1.2rem;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: 5px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    
-    .redeem-input:focus {
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    }
-    
-    .redeem-btn {
-      padding: 12px 30px;
-      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .redeem-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-    }
-    
-    .profile-section-card {
-      background: var(--card-bg);
       border: 1px solid var(--card-border);
+    }
+    
+    .referral-stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    
+    .referral-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .section-link-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 15px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
       cursor: pointer;
       transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     
-    .profile-section-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-glow);
-      border-color: var(--accent-blue);
+    .section-link-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
     
-    .profile-section-img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
+    .section-link-image {
+      width: 80px;
+      height: 80px;
       border-radius: 12px;
-      margin-bottom: 15px;
+      object-fit: cover;
+      border: 2px solid var(--accent-cyan);
     }
     
-    .profile-section-title {
-      font-size: 1.2rem;
+    .section-link-title {
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
-      text-align: center;
     }
     
-    /* ========== RANKING SECTION ========== */
+    /* Ranking Section */
     .ranking-position {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
       text-align: center;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
+      padding: 20px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
     }
     
     .ranking-position-label {
-      font-size: 0.9rem;
+      font-size: 14px;
       color: var(--text-secondary);
-      margin-bottom: 10px;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
     
     .ranking-position-value {
-      font-size: 2.5rem;
-      font-weight: 900;
-      background: var(--gradient-accent);
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     
     .ranking-row {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 15px 20px;
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 15px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      gap: 16px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 8px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
     }
     
-    .ranking-row:hover {
-      transform: translateX(5px);
-      border-color: var(--accent-blue);
+    .ranking-position-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
     }
     
-    .ranking-pos {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--accent-gold);
-      min-width: 40px;
-      text-align: center;
+    .ranking-position-num.top3 {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
     
-    .ranking-row:nth-child(1) .ranking-pos {
-      color: #ffd700;
-      text-shadow: 0 0 10px #ffd700;
-    }
-    
-    .ranking-row:nth-child(2) .ranking-pos {
-      color: #c0c0c0;
-      text-shadow: 0 0 10px #c0c0c0;
-    }
-    
-    .ranking-row:nth-child(3) .ranking-pos {
-      color: #cd7f32;
-      text-shadow: 0 0 10px #cd7f32;
-    }
-    
-    .ranking-userid {
+    .ranking-user-id {
       flex: 1;
-      font-size: 1rem;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text-primary);
     }
     
-    .ranking-shb {
-      font-size: 1.1rem;
+    .ranking-balance {
+      font-size: 16px;
       font-weight: 700;
-      color: var(--accent-blue);
+      color: var(--accent-cyan);
     }
     
-    /* ========== NOTIFICATION ========== */
-    .notif {
+    /* Notification */
+    .notification {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--gradient-accent);
-      color: var(--text-primary);
-      padding: 15px 30px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
+      padding: 16px 32px;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 14px;
       font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       z-index: 10000;
-      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.5);
-      animation: notifSlide 0.3s ease;
+      animation: slideDown 0.3s ease;
     }
     
-    @keyframes notifSlide {
+    @keyframes slideDown {
       from {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
@@ -1129,109 +868,32 @@
       }
     }
     
-    /* ========== RESPONSIVE ========== */
-    @media (max-width: 768px) {
-      .home-balance {
-        font-size: 3rem;
-        padding: 8px 30px;
+    /* Responsive Design */
+    @media (max-width: 360px) {
+      .balance-amount {
+        font-size: 36px;
       }
       
       .coin-container {
-        max-width: 320px;
-        height: 320px;
-      }
-      
-      .coin-btn {
         width: 240px;
         height: 240px;
       }
       
-      .coin-glow {
-        width: 260px;
-        height: 260px;
-      }
-      
-      .coin-ring-1 { width: 280px; height: 280px; }
-      .coin-ring-2 { width: 310px; height: 310px; }
-      .coin-ring-3 { width: 340px; height: 340px; }
-      
-      .tap-plus {
-        font-size: 2.5rem;
-      }
-      
-      .home-info-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-      
-      .info-card {
-        padding: 15px 10px;
-      }
-      
-      .info-value {
-        font-size: 1.5rem;
-      }
-      
-      .section-title {
-        font-size: 1.5rem;
-      }
-      
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .home-balance {
-        font-size: 2.5rem;
-        padding: 6px 20px;
-      }
-      
-      .balance-shb {
-        font-size: 1.2rem;
-      }
-      
-      .coin-container {
-        max-width: 280px;
-        height: 280px;
-      }
-      
-      .coin-btn {
+      .coin-image {
         width: 200px;
         height: 200px;
       }
       
-      .coin-glow {
-        width: 220px;
-        height: 220px;
+      .stats-grid {
+        gap: 8px;
       }
       
-      .coin-ring-1 { width: 240px; height: 240px; }
-      .coin-ring-2 { width: 260px; height: 260px; }
-      .coin-ring-3 { width: 280px; height: 280px; }
-      
-      .tap-plus {
-        font-size: 2rem;
+      .stat-card {
+        padding: 12px 8px;
       }
       
-      .info-value {
-        font-size: 1.3rem;
-      }
-      
-      .info-label,
-      .info-desc {
-        font-size: 0.7rem;
-      }
-      
-      .wallet-form,
-      .redeem-form {
-        flex-direction: column;
-      }
-      
-      .save-btn,
-      .redeem-btn {
-        width: 100%;
+      .stat-value {
+        font-size: 18px;
       }
     }
   </style>
@@ -1250,28 +912,28 @@
     <!-- Navigation Bar -->
     <div class="nav-bar">
       <button class="nav-btn active" data-tab="home">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/homebtn%20(1).png?raw=true" alt="Home" />
+        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/homebtn%20(1).png?raw=true" alt="Home" class="nav-icon" />
         <span class="nav-label">Home</span>
       </button>
       <button class="nav-btn" data-tab="booster">
-        <img src="https://github.com/akhterefti-del/Shark/blob/823776a5bcbad3401fd886a8f932726c1bd88e9a/boostbt%20(1).png?raw=true" alt="Booster" />
+        <img src="https://github.com/akhterefti-del/Shark/blob/823776a5bcbad3401fd886a8f932726c1bd88e9a/boostbt%20(1).png?raw=true" alt="Booster" class="nav-icon" />
         <span class="nav-label">Booster</span>
       </button>
       <button class="nav-btn" data-tab="earn">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/earnbtn%20(1).png?raw=true" alt="Earn" />
+        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/earnbtn%20(1).png?raw=true" alt="Earn" class="nav-icon" />
         <span class="nav-label">Earn</span>
       </button>
       <button class="nav-btn" data-tab="profile">
-        <img src="https://github.com/akhterefti-del/Shark/blob/b5e62135807688bb67f0d564bcbe383d9c0b5eef/profilebtn%20(1).png?raw=true" alt="Profile" />
+        <img src="https://github.com/akhterefti-del/Shark/blob/b5e62135807688bb67f0d564bcbe383d9c0b5eef/profilebtn%20(1).png?raw=true" alt="Profile" class="nav-icon" />
         <span class="nav-label">Profile</span>
       </button>
       <button class="nav-btn" data-tab="ranking">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/rankingbtn%20(1).png?raw=true" alt="Ranking" />
+        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/rankingbtn%20(1).png?raw=true" alt="Ranking" class="nav-icon" />
         <span class="nav-label">Ranking</span>
       </button>
     </div>
   </div>
-
+  
   <script>
     // Firebase Configuration
     const firebaseConfig = {
@@ -1287,8 +949,8 @@
     
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
-    // Global Variables
+    
+    // Global State
     let userId = null;
     let userData = null;
     let energyTimer = null;
@@ -1303,45 +965,69 @@
       maxEnergyUpCount: 0
     };
     let coinsEarned = 0;
-    let referrals = { count: 0, eject: 0 };
     let adLoading = false;
     let profileSections = [];
     let rankingListener = null;
-
+    
     // Utility Functions
     function now() {
       return Math.floor(Date.now() / 1000);
     }
-
-    function notify(msg, duration = 2500) {
-      const box = document.createElement('div');
-      box.className = 'notif';
-      box.textContent = msg;
-      document.body.appendChild(box);
-      setTimeout(() => box.remove(), duration);
-    }
-
-    function getOrSetUserId() {
-      // Check URL parameters for referral
-      const urlParams = new URLSearchParams(window.location.search);
-      const refParam = urlParams.get('start');
+    
+    function notify(message, duration = 2500) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
       
+      setTimeout(() => {
+        notification.remove();
+      }, duration);
+    }
+    
+    function getOrSetUserId() {
       let id = localStorage.getItem('shb_userid');
+      
+      // Check for referral parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const referralId = urlParams.get('ref') || urlParams.get('start');
+      
       if (!id) {
         id = Math.floor(10000 + Math.random() * 89999).toString();
         localStorage.setItem('shb_userid', id);
         
-        // Handle referral if present
-        if (refParam && refParam.startsWith('r')) {
-          const referrerId = refParam.substring(1);
+        // Process referral if exists
+        if (referralId && referralId.startsWith('r')) {
+          const referrerId = referralId.substring(1);
           if (referrerId !== id) {
-            localStorage.setItem('shb_referrer', referrerId);
+            processReferral(referrerId);
           }
         }
       }
+      
       userId = id;
     }
-
+    
+    function processReferral(referrerId) {
+      db.ref('users/' + referrerId).once('value').then(snap => {
+        if (snap.exists()) {
+          const referrerData = snap.val();
+          const newReferralCount = (referrerData.referrals || 0) + 1;
+          const newBalance = (referrerData.balance || 0) + 500;
+          
+          db.ref('users/' + referrerId).update({
+            referrals: newReferralCount,
+            balance: newBalance
+          });
+          
+          // Store referrer in new user's data
+          db.ref('users/' + userId).update({
+            referredBy: referrerId
+          });
+        }
+      });
+    }
+    
     function saveLastSeenData() {
       if (userData) {
         db.ref('users/' + userId).update({
@@ -1351,15 +1037,18 @@
         });
       }
     }
-
+    
+    window.addEventListener('beforeunload', saveLastSeenData);
+    window.addEventListener('unload', saveLastSeenData);
+    
     function getOfflineTime(snap) {
       const lastSeen = snap.val() && snap.val().lastSeen;
       if (!lastSeen) return 0;
-      const t = now() - lastSeen;
-      return t > 0 ? t : 0;
+      const timeDiff = now() - lastSeen;
+      return timeDiff > 0 ? timeDiff : 0;
     }
-
-    // User Data Management
+    
+    // Load User Data
     function loadUserData() {
       db.ref('users/' + userId).once('value').then(snap => {
         const offlineTime = getOfflineTime(snap);
@@ -1376,7 +1065,7 @@
             multiTapCount: 0,
             maxEnergyUpCount: 0,
             ton: "",
-            avatar: "https://github.com/s42144/Shark-Bounty/blob/1d76d695d2c3b9072acba120d6e5f68b4fe00739/profile%20avatar%20.png?raw=true",
+            avatar: "https://github.com/akhterefti-del/Shark/blob/43434e64fd7f0a55152c5e982b6a95f2c0496c5b/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true",
             referrals: 0,
             eject: 0,
             completedTasks: {},
@@ -1386,41 +1075,33 @@
             lastEnergy: 1200
           };
           db.ref('users/' + userId).set(userData);
-          
-          // Process referral bonus
-          const referrerId = localStorage.getItem('shb_referrer');
-          if (referrerId) {
-            processReferral(referrerId);
-            localStorage.removeItem('shb_referrer');
-          }
         }
-
-        // Handle offline energy recovery
+        
+        // Handle offline energy recovery (0.5 per second)
         let energy = userData.energy || 1200;
         const maxEnergy = userData.maxEnergy || 1200;
         const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
-
-        // Handle offline income
+        
+        // Handle offline income booster (1 SHB per 10 seconds)
         let balance = userData.balance || 0;
-        if (userData.incomeBooster) {
+        const incomeBooster = userData.incomeBooster || false;
+        if (incomeBooster) {
           const offlineIncome = Math.floor(offlineTime / 10);
           balance += offlineIncome;
         }
-
-        // Update local state
+        
+        // Update state
         userData.energy = Math.round(offlineEnergy);
         userData.balance = balance;
         coinsEarned = balance;
         booster.energy = userData.energy;
         booster.maxEnergy = userData.maxEnergy || 1200;
         booster.multiTap = userData.multiTap || 1;
-        booster.incomeBooster = userData.incomeBooster || false;
+        booster.incomeBooster = incomeBooster;
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
         adStats = userData.adStats || { today: 0, daily: 0, monthly: 0, lifetime: 0 };
-        referrals.count = userData.referrals || 0;
-        referrals.eject = userData.eject || 0;
-
+        
         // Save updated values
         db.ref('users/' + userId).update({
           energy: userData.energy,
@@ -1429,27 +1110,12 @@
           lastBalance: balance,
           lastEnergy: userData.energy
         });
-
+        
         showTab('home');
         setupIncomeBooster();
       });
     }
-
-    function processReferral(referrerId) {
-      db.ref('users/' + referrerId).once('value').then(snap => {
-        if (snap.exists()) {
-          const referrerData = snap.val();
-          const newBalance = (referrerData.balance || 0) + 500;
-          const newReferrals = (referrerData.referrals || 0) + 1;
-          
-          db.ref('users/' + referrerId).update({
-            balance: newBalance,
-            referrals: newReferrals
-          });
-        }
-      });
-    }
-
+    
     function updateUserData(newData) {
       Object.assign(userData, newData);
       db.ref('users/' + userId).update(newData);
@@ -1462,70 +1128,57 @@
       if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
       if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
       if (newData.adStats !== undefined) adStats = newData.adStats;
-      if (newData.referrals !== undefined) referrals.count = newData.referrals;
-      if (newData.eject !== undefined) referrals.eject = newData.eject;
     }
-
-    // Tab Navigation
+    
+    // Navigation
     function showTab(tab) {
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
       });
-
+      
       if (tab === 'home') renderHome();
       if (tab === 'booster') renderBooster();
       if (tab === 'earn') renderEarn();
       if (tab === 'profile') renderProfile();
       if (tab === 'ranking') renderRanking();
     }
-
-    // ========== HOME SECTION ==========
+    
+    // Home Section
     function renderHome() {
       const profit = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
       
       const html = `
         <div class="home-main">
-          <div class="home-balance-container">
+          <div class="balance-card">
             <div class="balance-label">Your Balance</div>
-            <div class="home-balance" id="homeBalance">
-              ${coinsEarned.toLocaleString()}
-              <span class="balance-shb">SHB</span>
-            </div>
+            <div class="balance-amount" id="homeBalance">${coinsEarned}</div>
+            <div class="balance-currency">SHB</div>
           </div>
           
           <div class="coin-container">
-            <div class="coin-ring coin-ring-1"></div>
-            <div class="coin-ring coin-ring-2"></div>
-            <div class="coin-ring coin-ring-3"></div>
             <div class="coin-glow"></div>
-            <div class="sparkle-container">
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-              <div class="sparkle"></div>
-            </div>
             <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
-                 class="coin-btn" id="coinBtn" alt="Shark Coin" />
-            <div class="tap-plus" id="tapPlus">+1</div>
+                 class="coin-image" 
+                 id="coinImage" 
+                 alt="Shark Coin" />
+            <div class="tap-indicator" id="tapIndicator">+1</div>
           </div>
           
-          <div class="home-info-grid">
-            <div class="info-card">
-              <div class="info-label">⚡ Energy</div>
-              <div class="info-value" id="energyValue">${Math.floor(booster.energy)}</div>
-              <div class="info-desc">/ ${booster.maxEnergy}</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Energy</div>
+              <div class="stat-value" id="energyValue">${Math.floor(booster.energy)}</div>
+              <div class="stat-desc">/ ${booster.maxEnergy}</div>
             </div>
-            <div class="info-card">
-              <div class="info-label">👆 Multi-Tap</div>
-              <div class="info-value" id="multiTapValue">${booster.multiTap}</div>
-              <div class="info-desc">fingers</div>
+            <div class="stat-card">
+              <div class="stat-label">Multi-Tap</div>
+              <div class="stat-value" id="multiTapValue">${booster.multiTap}</div>
+              <div class="stat-desc">fingers</div>
             </div>
-            <div class="info-card">
-              <div class="info-label">💰 Profit/Hr</div>
-              <div class="info-value" id="profitValue">${profit}</div>
-              <div class="info-desc">SHB</div>
+            <div class="stat-card">
+              <div class="stat-label">Profit</div>
+              <div class="stat-value" id="profitValue">${profit}</div>
+              <div class="stat-desc">per hour</div>
             </div>
           </div>
         </div>
@@ -1535,362 +1188,339 @@
       setupCoinTapping();
       setupEnergyRecovery();
     }
-
+    
     function setupCoinTapping() {
-      const coin = document.getElementById('coinBtn');
+      const coin = document.getElementById('coinImage');
+      const indicator = document.getElementById('tapIndicator');
+      
       if (!coin) return;
-
-      function tapCoin(tapCount) {
+      
+      function handleTap(tapCount) {
         if (booster.energy < tapCount) {
-          notify('⚠️ Not enough energy!');
-          const tapPlus = document.getElementById('tapPlus');
-          tapPlus.textContent = '⚠️';
-          tapPlus.style.opacity = 1;
-          setTimeout(() => { tapPlus.style.opacity = 0; }, 500);
+          notify('Not enough energy!');
+          indicator.textContent = 'Low Energy';
+          indicator.classList.add('show');
+          setTimeout(() => indicator.classList.remove('show'), 500);
           return;
         }
-
+        
         booster.energy -= tapCount;
         coinsEarned += tapCount;
-        updateUserData({ balance: coinsEarned, energy: booster.energy });
-
-        const tapPlus = document.getElementById('tapPlus');
-        tapPlus.textContent = '+' + tapCount;
-        tapPlus.style.opacity = 1;
-        tapPlus.style.transform = 'translate(-50%, -50%) scale(1.2)';
         
-        setTimeout(() => {
-          tapPlus.style.opacity = 0;
-          tapPlus.style.transform = 'translate(-50%, -50%) scale(1)';
-        }, 400);
-
-        updateHomeValues();
+        updateUserData({
+          balance: coinsEarned,
+          energy: booster.energy
+        });
+        
+        indicator.textContent = '+' + tapCount;
+        indicator.classList.add('show');
+        setTimeout(() => indicator.classList.remove('show'), 400);
+        
+        updateEnergyDisplay();
+        document.getElementById('homeBalance').textContent = coinsEarned;
       }
-
-      coin.onclick = (e) => {
+      
+      // Desktop click
+      coin.addEventListener('click', (e) => {
         e.preventDefault();
-        tapCoin(booster.multiTap || 1);
-      };
-
-      coin.ontouchstart = (e) => {
+        handleTap(booster.multiTap);
+      });
+      
+      // Mobile touch with multi-finger support
+      coin.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = e.touches.length;
-        const tapCount = Math.min(touches, booster.multiTap || 1);
-        tapCoin(tapCount);
-      };
+        const tapCount = Math.min(touches, booster.multiTap);
+        handleTap(tapCount);
+      });
     }
-
-    function updateHomeValues() {
-      const balanceEl = document.getElementById('homeBalance');
+    
+    function updateEnergyDisplay() {
       const energyEl = document.getElementById('energyValue');
+      if (energyEl) {
+        energyEl.textContent = Math.floor(booster.energy);
+      }
+    }
+    
+    function updateStatsDisplay() {
       const multiTapEl = document.getElementById('multiTapValue');
       const profitEl = document.getElementById('profitValue');
-
-      if (balanceEl) {
-        balanceEl.innerHTML = `${coinsEarned.toLocaleString()}<span class="balance-shb">SHB</span>`;
-      }
-      if (energyEl) energyEl.textContent = Math.floor(booster.energy);
+      
       if (multiTapEl) multiTapEl.textContent = booster.multiTap;
       if (profitEl) {
-        profitEl.textContent = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
+        const profit = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
+        profitEl.textContent = profit;
       }
     }
-
+    
     function setupEnergyRecovery() {
       if (energyTimer) clearInterval(energyTimer);
+      
       energyTimer = setInterval(() => {
         if (booster.energy < booster.maxEnergy) {
           booster.energy += 0.5;
           booster.energy = Math.min(booster.energy, booster.maxEnergy);
+          
           updateUserData({ energy: Math.round(booster.energy) });
-          updateHomeValues();
+          updateEnergyDisplay();
         }
       }, 1000);
     }
-
+    
     function setupIncomeBooster() {
       if (incomeTimer) clearInterval(incomeTimer);
+      
       if (booster.incomeBooster) {
         incomeTimer = setInterval(() => {
           coinsEarned++;
           updateUserData({ balance: coinsEarned });
-          updateHomeValues();
+          
+          const balanceEl = document.getElementById('homeBalance');
+          if (balanceEl) balanceEl.textContent = coinsEarned;
+          
+          updateStatsDisplay();
         }, 10000);
       }
     }
-
-    // ========== BOOSTER SECTION ==========
+    
+    // Booster Section
     function renderBooster() {
       const maxEnergyDisabled = (booster.maxEnergyUpCount || 0) >= 10;
       const multiTapDisabled = (booster.multiTapCount || 0) >= 3;
       const incomeDisabled = booster.incomeBooster;
-
+      
       const html = `
         <div class="booster-main">
           <div class="section-header">
-            <div class="section-title">🚀 Boosters</div>
+            <div class="section-title">Boosters</div>
             <div class="section-subtitle">Upgrade your earning power</div>
           </div>
-
+          
           <div class="booster-card">
             <div class="booster-header">
               <div class="booster-icon">⚡</div>
               <div class="booster-info">
                 <div class="booster-title">Max Energy</div>
-                <div class="booster-price">💎 10,000 SHB</div>
+                <div class="booster-price">10,000 SHB</div>
               </div>
             </div>
             <div class="booster-desc">
-              Increase your maximum energy capacity by 500. More energy means more taps!
+              Increase your maximum energy capacity by 500 points. More energy means more tapping power!
             </div>
-            <div class="booster-stats">
-              <div class="stat-badge">Current: ${booster.maxEnergy}</div>
-              <div class="stat-badge">Upgrades Left: ${10 - (booster.maxEnergyUpCount || 0)}</div>
+            <div class="booster-progress">
+              Remaining: ${10 - (booster.maxEnergyUpCount || 0)} / 10
             </div>
-            <button class="buy-btn" id="buyEnergy" ${coinsEarned < 10000 || maxEnergyDisabled ? 'disabled' : ''}>
-              ${maxEnergyDisabled ? 'Max Level Reached' : 'Upgrade Energy'}
+            <button class="btn-primary" id="buyEnergy" ${coinsEarned < 10000 || maxEnergyDisabled ? 'disabled' : ''}>
+              ${maxEnergyDisabled ? 'Max Level' : 'Upgrade'}
             </button>
           </div>
-
+          
           <div class="booster-card">
             <div class="booster-header">
               <div class="booster-icon">👆</div>
               <div class="booster-info">
                 <div class="booster-title">Multi-Tap</div>
-                <div class="booster-price">💎 15,000 SHB</div>
+                <div class="booster-price">15,000 SHB</div>
               </div>
             </div>
             <div class="booster-desc">
-              Unlock multi-finger tapping. Each upgrade adds one more finger (max 4 fingers).
+              Unlock multi-finger tapping! Each upgrade adds one more finger (up to 4 total).
             </div>
-            <div class="booster-stats">
-              <div class="stat-badge">Current: ${booster.multiTap} fingers</div>
-              <div class="stat-badge">Upgrades Left: ${3 - (booster.multiTapCount || 0)}</div>
+            <div class="booster-progress">
+              Current: ${booster.multiTap} fingers | Remaining: ${3 - (booster.multiTapCount || 0)} / 3
             </div>
-            <button class="buy-btn" id="buyMultiTap" ${coinsEarned < 15000 || multiTapDisabled ? 'disabled' : ''}>
-              ${multiTapDisabled ? 'Max Level Reached' : 'Upgrade Multi-Tap'}
+            <button class="btn-primary" id="buyMultiTap" ${coinsEarned < 15000 || multiTapDisabled ? 'disabled' : ''}>
+              ${multiTapDisabled ? 'Max Level' : 'Upgrade'}
             </button>
           </div>
-
+          
           <div class="booster-card">
             <div class="booster-header">
               <div class="booster-icon">💰</div>
               <div class="booster-info">
                 <div class="booster-title">Passive Income</div>
-                <div class="booster-price">💎 100,000 SHB</div>
+                <div class="booster-price">100,000 SHB</div>
               </div>
             </div>
             <div class="booster-desc">
               Earn 1 SHB every 10 seconds automatically, even when offline! One-time purchase.
             </div>
-            <div class="booster-stats">
-              <div class="stat-badge">${incomeDisabled ? '✅ Active' : '❌ Inactive'}</div>
-              <div class="stat-badge">360 SHB/hour</div>
+            <div class="booster-progress">
+              ${incomeDisabled ? 'Active' : 'Not Purchased'}
             </div>
-            <button class="buy-btn" id="buyIncome" ${coinsEarned < 100000 || incomeDisabled ? 'disabled' : ''}>
-              ${incomeDisabled ? 'Already Purchased' : 'Activate Passive Income'}
+            <button class="btn-primary" id="buyIncome" ${coinsEarned < 100000 || incomeDisabled ? 'disabled' : ''}>
+              ${incomeDisabled ? 'Activated' : 'Purchase'}
             </button>
           </div>
         </div>
       `;
-
+      
       document.getElementById('main-content').innerHTML = html;
-
-      document.getElementById('buyEnergy').onclick = () => {
+      
+      // Energy Booster
+      document.getElementById('buyEnergy').addEventListener('click', () => {
         if (coinsEarned < 10000 || maxEnergyDisabled) {
-          notify('❌ Cannot purchase!');
+          notify('Cannot purchase this upgrade!');
           return;
         }
+        
         coinsEarned -= 10000;
         booster.maxEnergy += 500;
         booster.energy = booster.maxEnergy;
         booster.maxEnergyUpCount = (booster.maxEnergyUpCount || 0) + 1;
+        
         updateUserData({
           balance: coinsEarned,
           maxEnergy: booster.maxEnergy,
           energy: booster.maxEnergy,
           maxEnergyUpCount: booster.maxEnergyUpCount
         });
-        notify('✅ Max energy increased to ' + booster.maxEnergy + '!');
+        
+        notify('Max energy increased by 500!');
         renderBooster();
-      };
-
-      document.getElementById('buyMultiTap').onclick = () => {
+      });
+      
+      // Multi-Tap Booster
+      document.getElementById('buyMultiTap').addEventListener('click', () => {
         if (coinsEarned < 15000 || multiTapDisabled) {
-          notify('❌ Cannot purchase!');
+          notify('Cannot purchase this upgrade!');
           return;
         }
+        
         coinsEarned -= 15000;
         const nextTap = booster.multiTap === 1 ? 2 : (booster.multiTap === 2 ? 3 : 4);
         booster.multiTap = nextTap;
         booster.multiTapCount = (booster.multiTapCount || 0) + 1;
+        
         updateUserData({
           balance: coinsEarned,
           multiTap: nextTap,
           multiTapCount: booster.multiTapCount
         });
-        notify('✅ Multi-tap upgraded to ' + nextTap + ' fingers!');
+        
+        notify(`Multi-tap upgraded to ${nextTap} fingers!`);
         renderBooster();
-      };
-
-      document.getElementById('buyIncome').onclick = () => {
+        updateStatsDisplay();
+      });
+      
+      // Income Booster
+      document.getElementById('buyIncome').addEventListener('click', () => {
         if (coinsEarned < 100000 || incomeDisabled) {
-          notify('❌ Cannot purchase!');
+          notify('Cannot purchase this upgrade!');
           return;
         }
+        
         coinsEarned -= 100000;
         booster.incomeBooster = true;
+        
         updateUserData({
           balance: coinsEarned,
           incomeBooster: true
         });
-        notify('✅ Passive income activated!');
+        
+        notify('Passive income activated!');
         setupIncomeBooster();
         renderBooster();
-      };
+        updateStatsDisplay();
+      });
     }
-
-    // ========== EARN SECTION ==========
+    
+    // Earn Section
     function renderEarn() {
       const html = `
         <div class="earn-main">
           <div class="section-header">
-            <div class="section-title">💸 Earn More</div>
+            <div class="section-title">Earn More</div>
             <div class="section-subtitle">Complete tasks and watch ads</div>
           </div>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-label">Today</div>
-              <div class="stat-value">${adStats.today || 0}</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Daily</div>
-              <div class="stat-value">${adStats.daily || 0}</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Monthly</div>
-              <div class="stat-value">${adStats.monthly || 0}</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Lifetime</div>
-              <div class="stat-value">${adStats.lifetime || 0}</div>
-            </div>
-          </div>
-
-          <div class="chart-container">
+          
+          <div class="chart-card">
+            <div class="chart-title">Ad Statistics</div>
             <canvas id="adChart" width="400" height="200"></canvas>
           </div>
-
-          <div class="ad-section">
-            <div class="ad-title">📺 Watch Ad & Earn</div>
-            <button class="show-ad-btn" id="showAdBtn">
-              ${adLoading ? '⏳ Loading...' : '🎬 Watch Ad (+500 SHB)'}
+          
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-box-label">Today</div>
+              <div class="stat-box-value">${adStats.today || 0}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-label">Daily</div>
+              <div class="stat-box-value">${adStats.daily || 0}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-label">Monthly</div>
+              <div class="stat-box-value">${adStats.monthly || 0}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-label">Lifetime</div>
+              <div class="stat-box-value">${adStats.lifetime || 0}</div>
+            </div>
+          </div>
+          
+          <div class="ad-card">
+            <div class="ad-title">Watch Advertisement</div>
+            <div class="ad-reward">Earn 500 SHB per ad</div>
+            <button class="btn-primary" id="showAdBtn">
+              ${adLoading ? 'Loading...' : 'Watch Ad'}
             </button>
           </div>
-
+          
           <div id="tasksList"></div>
         </div>
       `;
-
+      
       document.getElementById('main-content').innerHTML = html;
-      setupShowAd();
-      loadTasks();
-      renderChart();
-    }
-
-    function setupShowAd() {
-      document.getElementById('showAdBtn').onclick = function() {
+      
+      // Setup ad button
+      document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
+        
         adLoading = true;
-        this.textContent = '⏳ Loading...';
-
+        document.getElementById('showAdBtn').textContent = 'Loading...';
+        
         if (typeof show_9970324 === 'function') {
           show_9970324().then(() => {
             adLoading = false;
-            this.textContent = '🎬 Watch Ad (+500 SHB)';
+            document.getElementById('showAdBtn').textContent = 'Watch Ad';
+            
             coinsEarned += 500;
             adStats.today++;
             adStats.daily++;
             adStats.monthly++;
             adStats.lifetime++;
-            updateUserData({ balance: coinsEarned, adStats });
-            notify('✅ +500 SHB earned from ad!');
+            
+            updateUserData({
+              balance: coinsEarned,
+              adStats: adStats
+            });
+            
+            notify('Earned 500 SHB for watching ad!');
             renderEarn();
           }).catch(() => {
             adLoading = false;
-            this.textContent = '🎬 Watch Ad (+500 SHB)';
-            notify('❌ Ad failed to load!');
+            document.getElementById('showAdBtn').textContent = 'Watch Ad';
+            notify('Ad failed to load. Please try again.');
           });
         } else {
           adLoading = false;
-          this.textContent = '🎬 Watch Ad (+500 SHB)';
-          notify('❌ Ad service not ready!');
+          document.getElementById('showAdBtn').textContent = 'Watch Ad';
+          notify('Ad service not available.');
         }
-      };
-    }
-
-    function loadTasks() {
-      db.ref('tasks').once('value').then(snap => {
-        const tasks = snap.val() || {};
-        let html = '';
-
-        Object.keys(tasks).forEach(tid => {
-          const task = tasks[tid];
-          const completed = userData.completedTasks && userData.completedTasks[tid];
-
-          html += `
-            <div class="task-card">
-              <img src="${task.photo}" class="task-photo" alt="${task.name}" />
-              <div class="task-info">
-                <div class="task-title">${task.name}</div>
-                <div class="task-amount">💰 ${task.amount} SHB</div>
-              </div>
-              <button class="task-btn ${completed ? 'completed' : ''}" data-tid="${tid}">
-                ${completed ? '✅ Done' : '▶️ Start'}
-              </button>
-            </div>
-          `;
-        });
-
-        document.getElementById('tasksList').innerHTML = html;
-
-        document.querySelectorAll('.task-btn').forEach(btn => {
-          btn.onclick = function() {
-            const tid = this.dataset.tid;
-            const task = tasks[tid];
-
-            if (userData.completedTasks && userData.completedTasks[tid]) {
-              window.open(task.link, '_blank');
-              return;
-            }
-
-            coinsEarned += parseInt(task.amount);
-            if (!userData.completedTasks) userData.completedTasks = {};
-            userData.completedTasks[tid] = true;
-            updateUserData({
-              balance: coinsEarned,
-              completedTasks: userData.completedTasks
-            });
-            notify(`✅ +${task.amount} SHB earned!`);
-            window.open(task.link, '_blank');
-            renderEarn();
-          };
-        });
       });
-    }
-
-    function renderChart() {
+      
+      // Load tasks
+      loadTasks();
+      
+      // Setup chart
       setTimeout(() => {
-        const ctx = document.getElementById('adChart');
-        if (!ctx) return;
-
-        new Chart(ctx.getContext('2d'), {
+        const ctx = document.getElementById('adChart').getContext('2d');
+        new Chart(ctx, {
           type: 'bar',
           data: {
             labels: ['Today', 'Daily', 'Monthly', 'Lifetime'],
             datasets: [{
-              label: 'Ad Views',
+              label: 'Ads Watched',
               data: [
                 adStats.today || 0,
                 adStats.daily || 0,
@@ -1898,291 +1528,380 @@
                 adStats.lifetime || 0
               ],
               backgroundColor: [
-                'rgba(0, 212, 255, 0.6)',
-                'rgba(123, 44, 191, 0.6)',
-                'rgba(233, 30, 99, 0.6)',
-                'rgba(255, 215, 0, 0.6)'
+                'rgba(79, 172, 254, 0.8)',
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(118, 75, 162, 0.8)',
+                'rgba(245, 87, 108, 0.8)'
               ],
               borderColor: [
-                'rgba(0, 212, 255, 1)',
-                'rgba(123, 44, 191, 1)',
-                'rgba(233, 30, 99, 1)',
-                'rgba(255, 215, 0, 1)'
+                'rgba(79, 172, 254, 1)',
+                'rgba(102, 126, 234, 1)',
+                'rgba(118, 75, 162, 1)',
+                'rgba(245, 87, 108, 1)'
               ],
-              borderWidth: 2
+              borderWidth: 2,
+              borderRadius: 8
             }]
           },
           options: {
             responsive: true,
+            maintainAspectRatio: true,
             plugins: {
-              legend: { display: false }
+              legend: {
+                display: false
+              }
             },
             scales: {
-              y: { beginAtZero: true }
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: 'rgba(255, 255, 255, 0.7)'
+                },
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.1)'
+                }
+              },
+              x: {
+                ticks: {
+                  color: 'rgba(255, 255, 255, 0.7)'
+                },
+                grid: {
+                  display: false
+                }
+              }
             }
           }
         });
       }, 100);
     }
-
-    // ========== PROFILE SECTION ==========
-    function renderProfile() {
-      loadProfileSections().then(() => {
-        // Get referral count from Firebase
-        db.ref('users').orderByChild('referrals').once('value').then(() => {
-          const myRefCount = userData.referrals || 0;
-          const myEjectCount = userData.eject || 0;
-
-          let sectionsHTML = '';
-          profileSections.forEach(section => {
-            sectionsHTML += `
-              <div class="profile-section-card" onclick="window.open('${section.link}', '_blank')">
-                <img src="${section.image}" class="profile-section-img" alt="${section.name}" />
-                <div class="profile-section-title">${section.name}</div>
+    
+    function loadTasks() {
+      db.ref('tasks').once('value').then(snap => {
+        const tasks = snap.val() || {};
+        let html = '';
+        
+        Object.keys(tasks).forEach(taskId => {
+          const task = tasks[taskId];
+          const completed = userData.completedTasks && userData.completedTasks[taskId];
+          
+          html += `
+            <div class="task-card">
+              <img src="${task.photo}" class="task-image" alt="${task.name}" />
+              <div class="task-info">
+                <div class="task-name">${task.name}</div>
+                <div class="task-reward">+${task.amount} SHB</div>
               </div>
-            `;
-          });
-
-          const html = `
-            <div class="profile-main">
-              <div class="profile-header">
-                <div class="avatar-container">
-                  <img src="${userData.avatar}" class="avatar-img" alt="Avatar" />
-                </div>
-                <div class="user-id-box">
-                  <span class="user-id">ID: ${userId}</span>
-                  <button class="copy-btn" id="copyIdBtn">
-                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" alt="Copy" />
-                  </button>
-                </div>
-              </div>
-
-              <div class="wallet-section">
-                <div class="section-label">
-                  <span class="section-icon">💳</span>
-                  TON Wallet
-                </div>
-                <div class="wallet-form">
-                  <input type="text" class="wallet-input" id="walletInput" 
-                         placeholder="Enter TON wallet address" 
-                         value="${userData.ton || ''}" />
-                  <button class="save-btn" id="saveWalletBtn">Save</button>
-                </div>
-              </div>
-
-              <div class="referral-section">
-                <div class="section-label">
-                  <span class="section-icon">👥</span>
-                  Referral Program
-                </div>
-                <div class="ref-link-box">
-                  <div class="ref-link" id="refLink">
-                    https://t.me/SharkBountybot?start=r${userId}
-                  </div>
-                  <button class="copy-btn" id="copyRefBtn">
-                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" alt="Copy" />
-                  </button>
-                </div>
-                <div class="ref-stats">
-                  <div class="ref-stat">
-                    <div class="ref-stat-label">Total Referrals</div>
-                    <div class="ref-stat-value" id="refCount">${myRefCount}</div>
-                  </div>
-                  <div class="ref-stat">
-                    <div class="ref-stat-label">Eject Referrals</div>
-                    <div class="ref-stat-value" id="ejectCount">${myEjectCount}</div>
-                  </div>
-                </div>
-              </div>
-
-              ${sectionsHTML}
-
-              <div class="redeem-section">
-                <div class="section-label">
-                  <span class="section-icon">🎁</span>
-                  Redeem Code
-                </div>
-                <div class="redeem-form">
-                  <input type="text" class="redeem-input" id="redeemInput" 
-                         maxlength="4" placeholder="CODE" />
-                  <button class="redeem-btn" id="redeemBtn">Redeem</button>
-                </div>
-              </div>
+              <button class="task-btn ${completed ? 'completed' : ''}" data-task-id="${taskId}">
+                ${completed ? 'Done' : 'Start'}
+              </button>
             </div>
           `;
-
-          document.getElementById('main-content').innerHTML = html;
-
-          // Event listeners
-          document.getElementById('copyIdBtn').onclick = () => {
-            navigator.clipboard.writeText(userId).then(() => {
-              notify('✅ User ID copied!');
-            });
-          };
-
-          document.getElementById('copyRefBtn').onclick = () => {
-            const refLink = document.getElementById('refLink').textContent;
-            navigator.clipboard.writeText(refLink).then(() => {
-              notify('✅ Referral link copied!');
-            });
-          };
-
-          document.getElementById('refLink').onclick = function() {
-            navigator.clipboard.writeText(this.textContent).then(() => {
-              notify('✅ Referral link copied!');
-            });
-          };
-
-          document.getElementById('saveWalletBtn').onclick = () => {
-            const wallet = document.getElementById('walletInput').value.trim();
-            if (wallet.length < 10) {
-              notify('❌ Invalid TON wallet address!');
+        });
+        
+        document.getElementById('tasksList').innerHTML = html;
+        
+        // Setup task buttons
+        document.querySelectorAll('.task-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+            const task = tasks[taskId];
+            
+            if (userData.completedTasks && userData.completedTasks[taskId]) {
+              window.open(task.link, '_blank');
               return;
             }
-            updateUserData({ ton: wallet });
-            notify('✅ TON wallet saved!');
-          };
-
-          document.getElementById('redeemBtn').onclick = () => {
-            const code = document.getElementById('redeemInput').value.trim();
-            if (code.length !== 4) {
-              notify('❌ Enter a valid 4-digit code!');
-              return;
-            }
-
-            db.ref('redeemCodes/' + code).once('value').then(snap => {
-              if (snap.exists()) {
-                const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
-                coinsEarned += amount;
-                updateUserData({ balance: coinsEarned });
-                db.ref('redeemCodes/' + code).remove();
-                notify(`✅ +${amount} SHB redeemed!`);
-                renderProfile();
-              } else {
-                notify('❌ Invalid or already used code!');
-              }
+            
+            coinsEarned += parseInt(task.amount);
+            
+            if (!userData.completedTasks) userData.completedTasks = {};
+            userData.completedTasks[taskId] = true;
+            
+            updateUserData({
+              balance: coinsEarned,
+              completedTasks: userData.completedTasks
             });
-          };
+            
+            notify(`Earned ${task.amount} SHB!`);
+            window.open(task.link, '_blank');
+            renderEarn();
+          });
         });
       });
     }
-
+    
+    // Profile Section
+    function renderProfile() {
+      loadProfileSections().then(() => {
+        // Count actual referrals
+        db.ref('users')
+          .orderByChild('referredBy')
+          .equalTo(userId)
+          .once('value')
+          .then(refSnap => {
+            const actualReferralCount = refSnap.numChildren();
+            
+            // Update referral count if different
+            if (actualReferralCount !== (userData.referrals || 0)) {
+              updateUserData({ referrals: actualReferralCount });
+            }
+            
+            let sectionsHTML = '';
+            profileSections.forEach(section => {
+              sectionsHTML += `
+                <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
+                  <img src="${section.image}" class="section-link-image" alt="${section.name}" />
+                  <div class="section-link-title">${section.name}</div>
+                </div>
+              `;
+            });
+            
+            const html = `
+              <div class="profile-main">
+                <div class="profile-header">
+                  <div class="avatar-container">
+                    <div class="avatar-glow"></div>
+                    <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
+                  </div>
+                  <div class="user-id-box">
+                    <span class="user-id-label">ID:</span>
+                    <span class="user-id-value">${userId}</span>
+                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                         class="copy-icon" 
+                         id="copyUserId" 
+                         alt="Copy" />
+                  </div>
+                </div>
+                
+                <div class="profile-card">
+                  <div class="card-title">TON Wallet</div>
+                  <div class="input-group">
+                    <input type="text" 
+                           class="input-field" 
+                           id="tonWallet" 
+                           placeholder="Enter your TON wallet address" 
+                           value="${userData.ton || ''}" />
+                    <button class="btn-secondary" id="saveTonWallet">Save</button>
+                  </div>
+                </div>
+                
+                <div class="profile-card">
+                  <div class="card-title">Referral Program</div>
+                  <div class="referral-link-box">
+                    <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
+                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                         class="copy-icon" 
+                         id="copyReferralLink" 
+                         alt="Copy" />
+                  </div>
+                  <div class="referral-stats">
+                    <div class="referral-stat">
+                      <div class="referral-stat-label">Total Referrals</div>
+                      <div class="referral-stat-value">${actualReferralCount}</div>
+                    </div>
+                    <div class="referral-stat">
+                      <div class="referral-stat-label">Earnings</div>
+                      <div class="referral-stat-value">${actualReferralCount * 500}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                ${sectionsHTML}
+                
+                <div class="profile-card">
+                  <div class="card-title">Redeem Code</div>
+                  <div class="input-group">
+                    <input type="text" 
+                           class="input-field" 
+                           id="redeemCode" 
+                           placeholder="Enter 4-digit code" 
+                           maxlength="4" />
+                    <button class="btn-secondary" id="redeemBtn">Redeem</button>
+                  </div>
+                </div>
+              </div>
+            `;
+            
+            document.getElementById('main-content').innerHTML = html;
+            
+            // Copy User ID
+            document.getElementById('copyUserId').addEventListener('click', () => {
+              navigator.clipboard.writeText(userId).then(() => {
+                notify('User ID copied to clipboard!');
+              });
+            });
+            
+            // Save TON Wallet
+            document.getElementById('saveTonWallet').addEventListener('click', () => {
+              const wallet = document.getElementById('tonWallet').value.trim();
+              if (wallet.length < 10) {
+                notify('Please enter a valid TON wallet address!');
+                return;
+              }
+              
+              updateUserData({ ton: wallet });
+              notify('TON wallet saved successfully!');
+            });
+            
+            // Copy Referral Link
+            document.getElementById('copyReferralLink').addEventListener('click', () => {
+              const link = document.getElementById('referralLink').textContent;
+              navigator.clipboard.writeText(link).then(() => {
+                notify('Referral link copied to clipboard!');
+              });
+            });
+            
+            // Redeem Code
+            document.getElementById('redeemBtn').addEventListener('click', () => {
+              const code = document.getElementById('redeemCode').value.trim();
+              if (code.length !== 4) {
+                notify('Please enter a valid 4-digit code!');
+                return;
+              }
+              
+              db.ref('redeemCodes/' + code).once('value').then(snap => {
+                if (snap.exists()) {
+                  const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
+                  coinsEarned += amount;
+                  
+                  updateUserData({ balance: coinsEarned });
+                  db.ref('redeemCodes/' + code).remove();
+                  
+                  notify(`Redeemed ${amount} SHB successfully!`);
+                  document.getElementById('redeemCode').value = '';
+                } else {
+                  notify('Invalid or already used code!');
+                }
+              });
+            });
+          });
+      });
+    }
+    
     function loadProfileSections() {
       return db.ref('profileSections').once('value').then(snap => {
         const sections = snap.val() || {};
         profileSections = [];
-        Object.keys(sections).forEach(sid => {
+        
+        Object.keys(sections).forEach(sectionId => {
           profileSections.push({
-            id: sid,
-            name: sections[sid].name,
-            image: sections[sid].image,
-            link: sections[sid].link
+            id: sectionId,
+            name: sections[sectionId].name,
+            image: sections[sectionId].image,
+            link: sections[sectionId].link
           });
         });
       });
     }
-
-    // ========== RANKING SECTION ==========
+    
+    // Ranking Section
     function renderRanking() {
       const html = `
         <div class="ranking-main">
           <div class="section-header">
-            <div class="section-title">🏆 Leaderboard</div>
+            <div class="section-title">Leaderboard</div>
             <div class="section-subtitle">Top 200 players</div>
           </div>
           
           <div class="ranking-position">
             <div class="ranking-position-label">Your Position</div>
-            <div class="ranking-position-value" id="myPosition">-</div>
+            <div class="ranking-position-value" id="myPosition">Loading...</div>
           </div>
           
           <div id="rankingList"></div>
         </div>
       `;
-
+      
       document.getElementById('main-content').innerHTML = html;
-
+      
+      // Setup live ranking listener
       if (rankingListener) rankingListener.off();
-
+      
       const usersRef = db.ref('users');
       
       function updateRankingList(snap) {
-        const arr = [];
+        const users = [];
+        
         snap.forEach(child => {
-          arr.push({
+          users.push({
             id: child.key,
-            shb: child.val().balance || 0
+            balance: child.val().balance || 0
           });
         });
-
-        arr.sort((a, b) => b.shb - a.shb);
-        const myPos = arr.findIndex(u => u.id === userId) + 1;
-        const top200 = arr.slice(0, 200);
-
+        
+        users.sort((a, b) => b.balance - a.balance);
+        
+        const myPosition = users.findIndex(u => u.id === userId) + 1;
+        const top200 = users.slice(0, 200);
+        
         let html = '';
-        top200.forEach((row, i) => {
+        top200.forEach((user, index) => {
+          const position = index + 1;
+          const isTop3 = position <= 3;
+          
           html += `
             <div class="ranking-row">
-              <div class="ranking-pos">${i + 1}</div>
-              <div class="ranking-userid">ID: ${row.id}</div>
-              <div class="ranking-shb">${row.shb.toLocaleString()} SHB</div>
+              <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
+              <div class="ranking-user-id">ID: ${user.id}</div>
+              <div class="ranking-balance">${user.balance}</div>
             </div>
           `;
         });
-
+        
         document.getElementById('rankingList').innerHTML = html;
-        document.getElementById('myPosition').textContent = myPos > 0 ? '#' + myPos : 'Unranked';
+        document.getElementById('myPosition').textContent = myPosition > 0 ? `#${myPosition}` : 'Unranked';
       }
-
+      
       usersRef.on('value', updateRankingList);
       rankingListener = usersRef;
     }
-
-    // ========== INITIALIZATION ==========
-    window.onbeforeunload = saveLastSeenData;
-    window.onunload = saveLastSeenData;
-
+    
+    // Navigation Setup
     document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.onclick = () => showTab(btn.dataset.tab);
+      btn.addEventListener('click', function() {
+        showTab(this.dataset.tab);
+      });
     });
-
+    
+    // Video Intro Handler
     const introVideo = document.getElementById('intro-video');
+    
     introVideo.addEventListener('ended', () => {
       introVideo.style.display = 'none';
       document.getElementById('app').style.display = 'block';
       getOrSetUserId();
       loadUserData();
     });
-
+    
     introVideo.addEventListener('error', () => {
       introVideo.style.display = 'none';
       document.getElementById('app').style.display = 'block';
       getOrSetUserId();
       loadUserData();
     });
-
-    window.onload = () => {
-      if (introVideo.ended || introVideo.style.display === 'none') {
+    
+    // Fallback if video doesn't play
+    setTimeout(() => {
+      if (introVideo.style.display !== 'none') {
         introVideo.style.display = 'none';
         document.getElementById('app').style.display = 'block';
         getOrSetUserId();
         loadUserData();
       }
-    };
-
-    // Initialize default profile sections
+    }, 5000);
+    
+    // Initialize default profile sections if not exist
     db.ref('profileSections').once('value').then(snap => {
       if (!snap.exists()) {
         db.ref('profileSections').set({
           roadmap: {
-            name: 'RoadMap',
+            name: 'Roadmap',
             image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/readmap.png?raw=true',
-            link: '#'
+            link: 'https://example.com/roadmap'
           },
           presale: {
             name: 'Presale',
             image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/presale.png?raw=true',
-            link: '#'
+            link: 'https://example.com/presale'
           }
         });
       }
