@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,19 +126,6 @@
       font-size: 12px;
       color: var(--text-secondary);
       font-weight: 600;
-    }
-    
-    /* Intro Video */
-    #intro-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 9998;
-      background: #000;
-      display: none;
     }
     
     /* Main App Container */
@@ -1075,11 +1063,6 @@
     <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
   </div>
   
-  <!-- Intro Video -->
-  <video id="intro-video" autoplay playsinline muted>
-    <source src="https://github.com/s42144/Shark-Bounty/raw/8b67f2028cd3d33d6545243ea43a57958c428edf/29f4182c-fb84-4f6e-830f-f560ae571afe.mp4" type="video/mp4" />
-  </video>
-  
   <!-- Main App -->
   <div id="app">
     <div id="main-content"></div>
@@ -1234,14 +1217,25 @@
                   console.log('Referrer found in database');
                   
                   const referrerData = refSnap.val();
-                  const newBalance = (referrerData.balance || 0) + 5000;
+                  const currentBalance = referrerData.balance || 0;
+                  const newBalance = currentBalance + 5000;
                   
-                  // Update referrer's balance
-                  db.ref('users/' + referrerId).update({
+                  // Update referrer's balance and referral count
+                  const updates = {
                     balance: newBalance,
                     lastUpdated: now()
-                  }).then(() => {
-                    console.log('Referrer balance updated to:', newBalance);
+                  };
+                  
+                  // Increment referral count
+                  if (referrerData.referralCount !== undefined) {
+                    updates.referralCount = referrerData.referralCount + 1;
+                  } else {
+                    updates.referralCount = 1;
+                  }
+                  
+                  db.ref('users/' + referrerId).update(updates).then(() => {
+                    console.log('Referrer balance updated:', currentBalance, '->', newBalance);
+                    console.log('Referral count updated to:', updates.referralCount);
                   });
                   
                   // Store referrer in new user's data
@@ -1251,6 +1245,17 @@
                   }).then(() => {
                     console.log('Referral link saved for user');
                     notify('Welcome! Your referrer earned 5000 SHB!', 3000);
+                  });
+                  
+                  // Send notification to admin
+                  db.ref('admin/notifications').push({
+                    type: 'new_referral',
+                    referrerId: referrerId,
+                    referrerName: referrerData.name || 'Unknown',
+                    newUserId: userId,
+                    newUserName: userName,
+                    reward: 5000,
+                    timestamp: now()
                   });
                 } else {
                   console.log('Referrer not found in database');
@@ -1311,7 +1316,7 @@
             ton: "",
             avatar: userAvatar,
             name: userName,
-            referrals: 0,
+            referralCount: 0,
             eject: 0,
             completedTasks: {},
             adStats: { today: 0, daily: 0, monthly: 0, lifetime: 0 },
@@ -1374,12 +1379,12 @@
         // Process referral if exists
         processReferral();
         
-        // Hide loading screen and show video
+        // Hide loading screen and show app directly (no video)
         updateLoadingProgress('Starting app...');
         
         setTimeout(() => {
           document.getElementById('loading-screen').style.display = 'none';
-          document.getElementById('intro-video').style.display = 'block';
+          document.getElementById('app').style.display = 'block';
         }, 1000);
         
         showTab('home');
@@ -1569,7 +1574,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">⚡</div>
+              <div class="booster-icon">\u26a1</div>
               <div class="booster-info">
                 <div class="booster-title">Max Energy</div>
                 <div class="booster-price">10,000 SHB</div>
@@ -1588,7 +1593,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">👆</div>
+              <div class="booster-icon">\ud83d\udc46</div>
               <div class="booster-info">
                 <div class="booster-title">Multi-Tap</div>
                 <div class="booster-price">15,000 SHB</div>
@@ -1607,7 +1612,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">💲</div>
+              <div class="booster-icon">\ud83d\udcb2</div>
               <div class="booster-info">
                 <div class="booster-title">Passive Income</div>
                 <div class="booster-price">100,000 SHB</div>
@@ -1903,13 +1908,22 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
-        // Count actual referrals
+        // Count actual referrals from database
         db.ref('users')
           .orderByChild('referredBy')
           .equalTo(userId)
           .once('value')
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
+            const referralEarnings = actualReferralCount * 5000;
+            
+            // Update referral count in user data if different
+            if (userData.referralCount !== actualReferralCount) {
+              db.ref('users/' + userId).update({
+                referralCount: actualReferralCount
+              });
+              userData.referralCount = actualReferralCount;
+            }
             
             let sectionsHTML = '';
             profileSections.forEach(section => {
@@ -1969,7 +1983,7 @@
                     </div>
                     <div class="referral-stat">
                       <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
+                      <div class="referral-stat-value">${referralEarnings}</div>
                     </div>
                   </div>
                 </div>
@@ -2147,27 +2161,6 @@
         showTab(this.dataset.tab);
       });
     });
-    
-    // Video Intro Handler
-    const introVideo = document.getElementById('intro-video');
-    
-    introVideo.addEventListener('ended', () => {
-      introVideo.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-    });
-    
-    introVideo.addEventListener('error', () => {
-      introVideo.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-    });
-    
-    // Fallback if video doesn't play
-    setTimeout(() => {
-      if (introVideo.style.display !== 'none') {
-        introVideo.style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-      }
-    }, 5000);
     
     // Initialize default profile sections if not exist
     db.ref('profileSections').once('value').then(snap => {
