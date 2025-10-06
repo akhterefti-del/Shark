@@ -127,19 +127,6 @@
       font-weight: 600;
     }
     
-    /* Intro Video */
-    #intro-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 9998;
-      background: #000;
-      display: none;
-    }
-    
     /* Main App Container */
     #app {
       display: none;
@@ -1075,11 +1062,6 @@
     <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
   </div>
   
-  <!-- Intro Video -->
-  <video id="intro-video" autoplay playsinline muted>
-    <source src="https://github.com/s42144/Shark-Bounty/raw/8b67f2028cd3d33d6545243ea43a57958c428edf/29f4182c-fb84-4f6e-830f-f560ae571afe.mp4" type="video/mp4" />
-  </video>
-  
   <!-- Main App -->
   <div id="app">
     <div id="main-content"></div>
@@ -1089,10 +1071,6 @@
       <button class="nav-btn active" data-tab="home">
         <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/homebtn%20(1).png?raw=true" alt="Home" class="nav-icon" />
         <span class="nav-label">Home</span>
-      </button>
-      <button class="nav-btn" data-tab="booster">
-        <img src="https://github.com/akhterefti-del/Shark/blob/823776a5bcbad3401fd886a8f932726c1bd88e9a/boostbt%20(1).png?raw=true" alt="Booster" class="nav-icon" />
-        <span class="nav-label">Booster</span>
       </button>
       <button class="nav-btn" data-tab="earn">
         <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/earnbtn%20(1).png?raw=true" alt="Earn" class="nav-icon" />
@@ -1150,6 +1128,7 @@
     let adLoading = false;
     let profileSections = [];
     let rankingListener = null;
+    let referralCount = 0;
     
     // Utility Functions
     function now() {
@@ -1183,7 +1162,6 @@
         userId = user.id.toString();
         userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
         
-        // Get user photo URL if available
         if (user.photo_url) {
           userAvatar = user.photo_url;
         } else {
@@ -1195,7 +1173,6 @@
         return true;
       }
       
-      // Fallback for testing outside Telegram
       console.warn('Running outside Telegram environment - using test user');
       userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
       userName = 'Test User';
@@ -1212,7 +1189,6 @@
       if (startParam) {
         let referrerId = null;
         
-        // Handle both formats: r123456 or just 123456
         if (startParam.startsWith('r')) {
           referrerId = startParam.substring(1);
         } else {
@@ -1223,25 +1199,26 @@
         console.log('Current User ID:', userId);
         
         if (referrerId && referrerId !== userId) {
-          // Check if user was already referred
           db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
             if (!snap.exists()) {
               console.log('Processing new referral...');
               
-              // First time being referred
               db.ref('users/' + referrerId).once('value').then(refSnap => {
                 if (refSnap.exists()) {
                   console.log('Referrer found in database');
                   
                   const referrerData = refSnap.val();
                   const newBalance = (referrerData.balance || 0) + 5000;
+                  const newReferralCount = (referrerData.referrals || 0) + 1;
                   
-                  // Update referrer's balance
+                  // Update referrer's balance and referral count
                   db.ref('users/' + referrerId).update({
                     balance: newBalance,
+                    referrals: newReferralCount,
                     lastUpdated: now()
                   }).then(() => {
                     console.log('Referrer balance updated to:', newBalance);
+                    console.log('Referrer referral count updated to:', newReferralCount);
                   });
                   
                   // Store referrer in new user's data
@@ -1279,7 +1256,6 @@
     window.addEventListener('beforeunload', saveLastSeenData);
     window.addEventListener('unload', saveLastSeenData);
     
-    // Auto-save every 30 seconds
     setInterval(saveLastSeenData, 30000);
     
     function getOfflineTime(snap) {
@@ -1324,7 +1300,6 @@
           console.log('New user created');
         }
         
-        // Update user name and avatar if changed
         if (userData.name !== userName || userData.avatar !== userAvatar) {
           db.ref('users/' + userId).update({
             name: userName,
@@ -1334,12 +1309,10 @@
           userData.avatar = userAvatar;
         }
         
-        // Handle offline energy recovery (0.5 per second)
         let energy = userData.energy || 1200;
         const maxEnergy = userData.maxEnergy || 1200;
         const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
         
-        // Handle offline income booster (1 SHB per 10 seconds)
         let balance = userData.balance || 0;
         const incomeBooster = userData.incomeBooster || false;
         if (incomeBooster) {
@@ -1350,7 +1323,6 @@
           }
         }
         
-        // Update state
         userData.energy = Math.round(offlineEnergy);
         userData.balance = balance;
         coinsEarned = balance;
@@ -1361,8 +1333,8 @@
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
         adStats = userData.adStats || { today: 0, daily: 0, monthly: 0, lifetime: 0 };
+        referralCount = userData.referrals || 0;
         
-        // Save updated values
         db.ref('users/' + userId).update({
           energy: userData.energy,
           balance: balance,
@@ -1371,15 +1343,13 @@
           lastEnergy: userData.energy
         });
         
-        // Process referral if exists
         processReferral();
         
-        // Hide loading screen and show video
         updateLoadingProgress('Starting app...');
         
         setTimeout(() => {
           document.getElementById('loading-screen').style.display = 'none';
-          document.getElementById('intro-video').style.display = 'block';
+          document.getElementById('app').style.display = 'block';
         }, 1000);
         
         showTab('home');
@@ -1399,6 +1369,7 @@
       if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
       if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
       if (newData.adStats !== undefined) adStats = newData.adStats;
+      if (newData.referrals !== undefined) referralCount = newData.referrals;
     }
     
     // Navigation
@@ -1408,7 +1379,6 @@
       });
       
       if (tab === 'home') renderHome();
-      if (tab === 'booster') renderBooster();
       if (tab === 'earn') renderEarn();
       if (tab === 'profile') renderProfile();
       if (tab === 'ranking') renderRanking();
@@ -1491,13 +1461,11 @@
         document.getElementById('homeBalance').textContent = coinsEarned;
       }
       
-      // Desktop click
       coin.addEventListener('click', (e) => {
         e.preventDefault();
         handleTap(booster.multiTap);
       });
       
-      // Mobile touch with multi-finger support
       coin.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = e.touches.length;
@@ -1554,155 +1522,12 @@
       }
     }
     
-    // Booster Section
-    function renderBooster() {
-      const maxEnergyDisabled = (booster.maxEnergyUpCount || 0) >= 10;
-      const multiTapDisabled = (booster.multiTapCount || 0) >= 3;
-      const incomeDisabled = booster.incomeBooster;
-      
-      const html = `
-        <div class="booster-main">
-          <div class="section-header">
-            <div class="section-title">Boosters</div>
-            <div class="section-subtitle">Upgrade your earning power</div>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">⚡</div>
-              <div class="booster-info">
-                <div class="booster-title">Max Energy</div>
-                <div class="booster-price">10,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Increase your maximum energy capacity by 500 points. More energy means more tapping power!
-            </div>
-            <div class="booster-progress">
-              Remaining: ${10 - (booster.maxEnergyUpCount || 0)} / 10
-            </div>
-            <button class="btn-primary" id="buyEnergy" ${coinsEarned < 10000 || maxEnergyDisabled ? 'disabled' : ''}>
-              ${maxEnergyDisabled ? 'Max Level' : 'Upgrade'}
-            </button>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">👆</div>
-              <div class="booster-info">
-                <div class="booster-title">Multi-Tap</div>
-                <div class="booster-price">15,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Unlock multi-finger tapping! Each upgrade adds one more finger (up to 4 total).
-            </div>
-            <div class="booster-progress">
-              Current: ${booster.multiTap} fingers | Remaining: ${3 - (booster.multiTapCount || 0)} / 3
-            </div>
-            <button class="btn-primary" id="buyMultiTap" ${coinsEarned < 15000 || multiTapDisabled ? 'disabled' : ''}>
-              ${multiTapDisabled ? 'Max Level' : 'Upgrade'}
-            </button>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">💲</div>
-              <div class="booster-info">
-                <div class="booster-title">Passive Income</div>
-                <div class="booster-price">100,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Earn 1 SHB every 10 seconds automatically, even when offline! One-time purchase.
-            </div>
-            <div class="booster-progress">
-              ${incomeDisabled ? 'Active' : 'Not Purchased'}
-            </div>
-            <button class="btn-primary" id="buyIncome" ${coinsEarned < 100000 || incomeDisabled ? 'disabled' : ''}>
-              ${incomeDisabled ? 'Activated' : 'Purchase'}
-            </button>
-          </div>
-        </div>
-      `;
-      
-      document.getElementById('main-content').innerHTML = html;
-      
-      // Energy Booster
-      document.getElementById('buyEnergy').addEventListener('click', () => {
-        if (coinsEarned < 10000 || maxEnergyDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 10000;
-        booster.maxEnergy += 500;
-        booster.energy = booster.maxEnergy;
-        booster.maxEnergyUpCount = (booster.maxEnergyUpCount || 0) + 1;
-        
-        updateUserData({
-          balance: coinsEarned,
-          maxEnergy: booster.maxEnergy,
-          energy: booster.maxEnergy,
-          maxEnergyUpCount: booster.maxEnergyUpCount
-        });
-        
-        notify('Max energy increased by 500!');
-        renderBooster();
-      });
-      
-      // Multi-Tap Booster
-      document.getElementById('buyMultiTap').addEventListener('click', () => {
-        if (coinsEarned < 15000 || multiTapDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 15000;
-        const nextTap = booster.multiTap === 1 ? 2 : (booster.multiTap === 2 ? 3 : 4);
-        booster.multiTap = nextTap;
-        booster.multiTapCount = (booster.multiTapCount || 0) + 1;
-        
-        updateUserData({
-          balance: coinsEarned,
-          multiTap: nextTap,
-          multiTapCount: booster.multiTapCount
-        });
-        
-        notify(`Multi-tap upgraded to ${nextTap} fingers!`);
-        renderBooster();
-        updateStatsDisplay();
-      });
-      
-      // Income Booster
-      document.getElementById('buyIncome').addEventListener('click', () => {
-        if (coinsEarned < 100000 || incomeDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 100000;
-        booster.incomeBooster = true;
-        
-        updateUserData({
-          balance: coinsEarned,
-          incomeBooster: true
-        });
-        
-        notify('Passive income activated!');
-        setupIncomeBooster();
-        renderBooster();
-        updateStatsDisplay();
-      });
-    }
-    
     // Earn Section
     function renderEarn() {
       const html = `
         <div class="earn-main">
           <div class="section-header">
             <div class="section-title">Earn More</div>
-            <div class="section-subtitle">Complete tasks and watch ads</div>
           </div>
           
           <div class="chart-card">
@@ -1743,7 +1568,6 @@
       
       document.getElementById('main-content').innerHTML = html;
       
-      // Setup ad button
       document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
         
@@ -1780,10 +1604,8 @@
         }
       });
       
-      // Load tasks
       loadTasks();
       
-      // Setup chart
       setTimeout(() => {
         const ctx = document.getElementById('adChart').getContext('2d');
         new Chart(ctx, {
@@ -1871,7 +1693,6 @@
         
         document.getElementById('tasksList').innerHTML = html;
         
-        // Setup task buttons
         document.querySelectorAll('.task-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const taskId = this.dataset.taskId;
@@ -1903,13 +1724,18 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
-        // Count actual referrals
         db.ref('users')
           .orderByChild('referredBy')
           .equalTo(userId)
           .once('value')
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
+            
+            // Update the referral count in database if different
+            if (actualReferralCount !== referralCount) {
+              referralCount = actualReferralCount;
+              updateUserData({ referrals: actualReferralCount });
+            }
             
             let sectionsHTML = '';
             profileSections.forEach(section => {
@@ -1992,14 +1818,12 @@
             
             document.getElementById('main-content').innerHTML = html;
             
-            // Copy User ID
             document.getElementById('copyUserId').addEventListener('click', () => {
               navigator.clipboard.writeText(userId).then(() => {
                 notify('User ID copied to clipboard!');
               });
             });
             
-            // Save TON Wallet
             document.getElementById('saveTonWallet').addEventListener('click', () => {
               const wallet = document.getElementById('tonWallet').value.trim();
               if (wallet.length < 10) {
@@ -2009,7 +1833,6 @@
               
               updateUserData({ ton: wallet });
               
-              // Send to admin panel
               db.ref('admin/tonSubmissions').push({
                 userId: userId,
                 userName: userName,
@@ -2021,7 +1844,6 @@
               notify('TON wallet saved successfully!');
             });
             
-            // Copy Referral Link
             document.getElementById('copyReferralLink').addEventListener('click', () => {
               const link = document.getElementById('referralLink').textContent;
               navigator.clipboard.writeText(link).then(() => {
@@ -2029,7 +1851,6 @@
               });
             });
             
-            // Redeem Code
             document.getElementById('redeemBtn').addEventListener('click', () => {
               const code = document.getElementById('redeemCode').value.trim();
               if (code.length !== 4) {
@@ -2078,7 +1899,6 @@
         <div class="ranking-main">
           <div class="section-header">
             <div class="section-title">Leaderboard</div>
-            <div class="section-subtitle">Top 200 players</div>
           </div>
           
           <div class="ranking-position">
@@ -2092,7 +1912,6 @@
       
       document.getElementById('main-content').innerHTML = html;
       
-      // Setup live ranking listener
       if (rankingListener) rankingListener.off();
       
       const usersRef = db.ref('users');
@@ -2147,27 +1966,6 @@
         showTab(this.dataset.tab);
       });
     });
-    
-    // Video Intro Handler
-    const introVideo = document.getElementById('intro-video');
-    
-    introVideo.addEventListener('ended', () => {
-      introVideo.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-    });
-    
-    introVideo.addEventListener('error', () => {
-      introVideo.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-    });
-    
-    // Fallback if video doesn't play
-    setTimeout(() => {
-      if (introVideo.style.display !== 'none') {
-        introVideo.style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-      }
-    }, 5000);
     
     // Initialize default profile sections if not exist
     db.ref('profileSections').once('value').then(snap => {
