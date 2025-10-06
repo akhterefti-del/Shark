@@ -127,6 +127,19 @@
       font-weight: 600;
     }
     
+    /* Intro Video */
+    #intro-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 9998;
+      background: #000;
+      display: none;
+    }
+    
     /* Main App Container */
     #app {
       display: none;
@@ -346,6 +359,29 @@
       color: var(--accent-cyan);
     }
     
+    /* Section Headers */
+    .section-header {
+      width: 100%;
+      text-align: center;
+      padding: 24px 0 20px;
+    }
+    
+    .section-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
     /* Booster Section */
     .booster-main, .earn-main, .profile-main, .ranking-main {
       padding: 20px 0 40px;
@@ -474,6 +510,14 @@
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow-md);
+    }
+    
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-align: center;
     }
     
     .stats-row {
@@ -958,29 +1002,6 @@
       flex-shrink: 0;
     }
     
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-    }
-    
-    .empty-state-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-    
-    .empty-state-text {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    
-    .empty-state-subtext {
-      font-size: 14px;
-      opacity: 0.7;
-    }
-    
     /* Notification */
     .notification {
       position: fixed;
@@ -1054,6 +1075,11 @@
     <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
   </div>
   
+  <!-- Intro Video -->
+  <video id="intro-video" autoplay playsinline muted>
+    <source src="https://github.com/s42144/Shark-Bounty/raw/8b67f2028cd3d33d6545243ea43a57958c428edf/29f4182c-fb84-4f6e-830f-f560ae571afe.mp4" type="video/mp4" />
+  </video>
+  
   <!-- Main App -->
   <div id="app">
     <div id="main-content"></div>
@@ -1111,7 +1137,7 @@
     let userData = null;
     let energyTimer = null;
     let incomeTimer = null;
-    let adStats = { today: 0, yesterday: 0, weekly: 0, monthly: 0 };
+    let adStats = { today: 0, daily: 0, monthly: 0, lifetime: 0 };
     let booster = {
       energy: 1200,
       maxEnergy: 1200,
@@ -1157,18 +1183,20 @@
         userId = user.id.toString();
         userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
         
+        // Get user photo URL if available
         if (user.photo_url) {
           userAvatar = user.photo_url;
         } else {
           userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
         }
         
-        console.log('✅ Telegram User ID:', userId);
-        console.log('✅ Telegram User Name:', userName);
+        console.log('Telegram User ID:', userId);
+        console.log('Telegram User Name:', userName);
         return true;
       }
       
-      console.warn('⚠️ Running outside Telegram - using test user');
+      // Fallback for testing outside Telegram
+      console.warn('Running outside Telegram environment - using test user');
       userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
       userName = 'Test User';
       userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
@@ -1176,99 +1204,66 @@
     }
     
     function processReferral() {
-      return new Promise((resolve) => {
-        updateLoadingProgress('Processing referral...');
+      updateLoadingProgress('Processing referral...');
+      
+      const startParam = tg.initDataUnsafe?.start_param;
+      console.log('Start Param:', startParam);
+      
+      if (startParam) {
+        let referrerId = null;
         
-        const startParam = tg.initDataUnsafe?.start_param;
-        console.log('📱 Start Param:', startParam);
-        
-        if (!startParam) {
-          console.log('ℹ️ No referral parameter');
-          resolve();
-          return;
+        // Handle both formats: r123456 or just 123456
+        if (startParam.startsWith('r')) {
+          referrerId = startParam.substring(1);
+        } else {
+          referrerId = startParam;
         }
         
-        let referrerId = startParam.startsWith('r') ? startParam.substring(1) : startParam;
+        console.log('Referrer ID:', referrerId);
+        console.log('Current User ID:', userId);
         
-        console.log('🔗 Referrer ID:', referrerId);
-        console.log('👤 Current User ID:', userId);
-        
-        if (!referrerId || referrerId === userId) {
-          console.log('⚠️ Invalid referral (self or empty)');
-          resolve();
-          return;
-        }
-        
-        // Check if already referred
-        db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
-          if (snap.exists()) {
-            console.log('ℹ️ User already referred by:', snap.val());
-            resolve();
-            return;
-          }
-          
-          console.log('✨ Processing NEW referral...');
-          
-          // Get referrer data
-          db.ref('users/' + referrerId).once('value').then(refSnap => {
-            if (!refSnap.exists()) {
-              console.log('❌ Referrer not found in database');
-              resolve();
-              return;
+        if (referrerId && referrerId !== userId) {
+          // Check if user was already referred
+          db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
+            if (!snap.exists()) {
+              console.log('Processing new referral...');
+              
+              // First time being referred
+              db.ref('users/' + referrerId).once('value').then(refSnap => {
+                if (refSnap.exists()) {
+                  console.log('Referrer found in database');
+                  
+                  const referrerData = refSnap.val();
+                  const newBalance = (referrerData.balance || 0) + 5000;
+                  
+                  // Update referrer's balance
+                  db.ref('users/' + referrerId).update({
+                    balance: newBalance,
+                    lastUpdated: now()
+                  }).then(() => {
+                    console.log('Referrer balance updated to:', newBalance);
+                  });
+                  
+                  // Store referrer in new user's data
+                  db.ref('users/' + userId).update({
+                    referredBy: referrerId,
+                    referredAt: now()
+                  }).then(() => {
+                    console.log('Referral link saved for user');
+                    notify('Welcome! Your referrer earned 5000 SHB!', 3000);
+                  });
+                } else {
+                  console.log('Referrer not found in database');
+                }
+              });
+            } else {
+              console.log('User was already referred by:', snap.val());
             }
-            
-            const referrerData = refSnap.val();
-            console.log('✅ Referrer found:', referrerData.name);
-            
-            // Calculate new balance
-            const oldBalance = referrerData.balance || 0;
-            const newBalance = oldBalance + 5000;
-            const oldCount = referrerData.referralCount || 0;
-            const newCount = oldCount + 1;
-            
-            console.log('💰 Updating referrer balance:', oldBalance, '->', newBalance);
-            console.log('📊 Updating referral count:', oldCount, '->', newCount);
-            
-            // Update referrer
-            const updates = {};
-            updates['users/' + referrerId + '/balance'] = newBalance;
-            updates['users/' + referrerId + '/referralCount'] = newCount;
-            updates['users/' + referrerId + '/lastUpdated'] = now();
-            
-            // Mark new user as referred
-            updates['users/' + userId + '/referredBy'] = referrerId;
-            updates['users/' + userId + '/referredAt'] = now();
-            
-            // Send admin notification
-            const notifKey = db.ref('admin/notifications').push().key;
-            updates['admin/notifications/' + notifKey] = {
-              type: 'new_referral',
-              referrerId: referrerId,
-              referrerName: referrerData.name || 'Unknown',
-              newUserId: userId,
-              newUserName: userName,
-              reward: 5000,
-              timestamp: now()
-            };
-            
-            // Apply all updates atomically
-            db.ref().update(updates).then(() => {
-              console.log('✅ Referral processed successfully!');
-              notify('🎉 Welcome! Your referrer earned 5000 SHB!', 3000);
-              resolve();
-            }).catch(error => {
-              console.error('❌ Error updating referral:', error);
-              resolve();
-            });
-          }).catch(error => {
-            console.error('❌ Error fetching referrer:', error);
-            resolve();
           });
-        }).catch(error => {
-          console.error('❌ Error checking referral status:', error);
-          resolve();
-        });
-      });
+        }
+      } else {
+        console.log('No referral parameter found');
+      }
     }
     
     function saveLastSeenData() {
@@ -1284,6 +1279,7 @@
     window.addEventListener('beforeunload', saveLastSeenData);
     window.addEventListener('unload', saveLastSeenData);
     
+    // Auto-save every 30 seconds
     setInterval(saveLastSeenData, 30000);
     
     function getOfflineTime(snap) {
@@ -1302,7 +1298,7 @@
         
         if (snap.exists()) {
           userData = snap.val();
-          console.log('✅ Existing user loaded');
+          console.log('Existing user data loaded');
         } else {
           userData = {
             balance: 0,
@@ -1315,36 +1311,35 @@
             ton: "",
             avatar: userAvatar,
             name: userName,
-            referralCount: 0,
+            referrals: 0,
             eject: 0,
             completedTasks: {},
-            adStats: { today: 0, yesterday: 0, weekly: 0, monthly: 0 },
+            adStats: { today: 0, daily: 0, monthly: 0, lifetime: 0 },
             lastSeen: now(),
             lastBalance: 0,
             lastEnergy: 1200,
-            createdAt: now(),
-            isTelegramUser: true
+            createdAt: now()
           };
           db.ref('users/' + userId).set(userData);
-          console.log('✅ New user created');
+          console.log('New user created');
         }
         
-        // Update name and avatar
+        // Update user name and avatar if changed
         if (userData.name !== userName || userData.avatar !== userAvatar) {
           db.ref('users/' + userId).update({
             name: userName,
-            avatar: userAvatar,
-            isTelegramUser: true
+            avatar: userAvatar
           });
           userData.name = userName;
           userData.avatar = userAvatar;
         }
         
-        // Handle offline recovery
+        // Handle offline energy recovery (0.5 per second)
         let energy = userData.energy || 1200;
         const maxEnergy = userData.maxEnergy || 1200;
         const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
         
+        // Handle offline income booster (1 SHB per 10 seconds)
         let balance = userData.balance || 0;
         const incomeBooster = userData.incomeBooster || false;
         if (incomeBooster) {
@@ -1355,6 +1350,7 @@
           }
         }
         
+        // Update state
         userData.energy = Math.round(offlineEnergy);
         userData.balance = balance;
         coinsEarned = balance;
@@ -1364,8 +1360,9 @@
         booster.incomeBooster = incomeBooster;
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
-        adStats = userData.adStats || { today: 0, yesterday: 0, weekly: 0, monthly: 0 };
+        adStats = userData.adStats || { today: 0, daily: 0, monthly: 0, lifetime: 0 };
         
+        // Save updated values
         db.ref('users/' + userId).update({
           energy: userData.energy,
           balance: balance,
@@ -1374,18 +1371,19 @@
           lastEnergy: userData.energy
         });
         
-        // Process referral AFTER user data is loaded
-        processReferral().then(() => {
-          updateLoadingProgress('Starting app...');
-          
-          setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-          }, 1000);
-          
-          showTab('home');
-          setupIncomeBooster();
-        });
+        // Process referral if exists
+        processReferral();
+        
+        // Hide loading screen and show video
+        updateLoadingProgress('Starting app...');
+        
+        setTimeout(() => {
+          document.getElementById('loading-screen').style.display = 'none';
+          document.getElementById('intro-video').style.display = 'block';
+        }, 1000);
+        
+        showTab('home');
+        setupIncomeBooster();
       });
     }
     
@@ -1493,11 +1491,13 @@
         document.getElementById('homeBalance').textContent = coinsEarned;
       }
       
+      // Desktop click
       coin.addEventListener('click', (e) => {
         e.preventDefault();
         handleTap(booster.multiTap);
       });
       
+      // Mobile touch with multi-finger support
       coin.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = e.touches.length;
@@ -1562,6 +1562,11 @@
       
       const html = `
         <div class="booster-main">
+          <div class="section-header">
+            <div class="section-title">Boosters</div>
+            <div class="section-subtitle">Upgrade your earning power</div>
+          </div>
+          
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
             <div class="booster-header">
               <div class="booster-icon">⚡</div>
@@ -1623,6 +1628,7 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // Energy Booster
       document.getElementById('buyEnergy').addEventListener('click', () => {
         if (coinsEarned < 10000 || maxEnergyDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1645,6 +1651,7 @@
         renderBooster();
       });
       
+      // Multi-Tap Booster
       document.getElementById('buyMultiTap').addEventListener('click', () => {
         if (coinsEarned < 15000 || multiTapDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1667,6 +1674,7 @@
         updateStatsDisplay();
       });
       
+      // Income Booster
       document.getElementById('buyIncome').addEventListener('click', () => {
         if (coinsEarned < 100000 || incomeDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1692,7 +1700,13 @@
     function renderEarn() {
       const html = `
         <div class="earn-main">
+          <div class="section-header">
+            <div class="section-title">Earn More</div>
+            <div class="section-subtitle">Complete tasks and watch ads</div>
+          </div>
+          
           <div class="chart-card">
+            <div class="chart-title">Ad Statistics</div>
             <canvas id="adChart" width="400" height="200"></canvas>
           </div>
           
@@ -1702,16 +1716,16 @@
               <div class="stat-box-value">${adStats.today || 0}</div>
             </div>
             <div class="stat-box">
-              <div class="stat-box-label">Yesterday</div>
-              <div class="stat-box-value">${adStats.yesterday || 0}</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-label">Weekly</div>
-              <div class="stat-box-value">${adStats.weekly || 0}</div>
+              <div class="stat-box-label">Daily</div>
+              <div class="stat-box-value">${adStats.daily || 0}</div>
             </div>
             <div class="stat-box">
               <div class="stat-box-label">Monthly</div>
               <div class="stat-box-value">${adStats.monthly || 0}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-label">Lifetime</div>
+              <div class="stat-box-value">${adStats.lifetime || 0}</div>
             </div>
           </div>
           
@@ -1729,6 +1743,7 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // Setup ad button
       document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
         
@@ -1742,8 +1757,9 @@
             
             coinsEarned += 500;
             adStats.today++;
-            adStats.weekly++;
+            adStats.daily++;
             adStats.monthly++;
+            adStats.lifetime++;
             
             updateUserData({
               balance: coinsEarned,
@@ -1764,21 +1780,23 @@
         }
       });
       
+      // Load tasks
       loadTasks();
       
+      // Setup chart
       setTimeout(() => {
         const ctx = document.getElementById('adChart').getContext('2d');
         new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: ['Today', 'Yesterday', 'Weekly', 'Monthly'],
+            labels: ['Today', 'Daily', 'Monthly', 'Lifetime'],
             datasets: [{
               label: 'Ads Watched',
               data: [
                 adStats.today || 0,
-                adStats.yesterday || 0,
-                adStats.weekly || 0,
-                adStats.monthly || 0
+                adStats.daily || 0,
+                adStats.monthly || 0,
+                adStats.lifetime || 0
               ],
               backgroundColor: [
                 'rgba(79, 172, 254, 0.8)',
@@ -1853,6 +1871,7 @@
         
         document.getElementById('tasksList').innerHTML = html;
         
+        // Setup task buttons
         document.querySelectorAll('.task-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const taskId = this.dataset.taskId;
@@ -1884,20 +1903,13 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
+        // Count actual referrals
         db.ref('users')
           .orderByChild('referredBy')
           .equalTo(userId)
           .once('value')
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
-            const referralEarnings = actualReferralCount * 5000;
-            
-            if (userData.referralCount !== actualReferralCount) {
-              db.ref('users/' + userId).update({
-                referralCount: actualReferralCount
-              });
-              userData.referralCount = actualReferralCount;
-            }
             
             let sectionsHTML = '';
             profileSections.forEach(section => {
@@ -1957,7 +1969,7 @@
                     </div>
                     <div class="referral-stat">
                       <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${referralEarnings}</div>
+                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
                     </div>
                   </div>
                 </div>
@@ -1980,12 +1992,14 @@
             
             document.getElementById('main-content').innerHTML = html;
             
+            // Copy User ID
             document.getElementById('copyUserId').addEventListener('click', () => {
               navigator.clipboard.writeText(userId).then(() => {
                 notify('User ID copied to clipboard!');
               });
             });
             
+            // Save TON Wallet
             document.getElementById('saveTonWallet').addEventListener('click', () => {
               const wallet = document.getElementById('tonWallet').value.trim();
               if (wallet.length < 10) {
@@ -1995,6 +2009,7 @@
               
               updateUserData({ ton: wallet });
               
+              // Send to admin panel
               db.ref('admin/tonSubmissions').push({
                 userId: userId,
                 userName: userName,
@@ -2006,6 +2021,7 @@
               notify('TON wallet saved successfully!');
             });
             
+            // Copy Referral Link
             document.getElementById('copyReferralLink').addEventListener('click', () => {
               const link = document.getElementById('referralLink').textContent;
               navigator.clipboard.writeText(link).then(() => {
@@ -2013,6 +2029,7 @@
               });
             });
             
+            // Redeem Code
             document.getElementById('redeemBtn').addEventListener('click', () => {
               const code = document.getElementById('redeemCode').value.trim();
               if (code.length !== 4) {
@@ -2059,6 +2076,11 @@
     function renderRanking() {
       const html = `
         <div class="ranking-main">
+          <div class="section-header">
+            <div class="section-title">Leaderboard</div>
+            <div class="section-subtitle">Top 200 players</div>
+          </div>
+          
           <div class="ranking-position">
             <div class="ranking-position-label">Your Position</div>
             <div class="ranking-position-value" id="myPosition">Loading...</div>
@@ -2070,23 +2092,22 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // Setup live ranking listener
       if (rankingListener) rankingListener.off();
       
-      const usersRef = db.ref('users').orderByChild('isTelegramUser').equalTo(true);
+      const usersRef = db.ref('users');
       
       function updateRankingList(snap) {
         const users = [];
         
         snap.forEach(child => {
           const userData = child.val();
-          if (userData.isTelegramUser) {
-            users.push({
-              id: child.key,
-              name: userData.name || 'Unknown',
-              avatar: userData.avatar || 'https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true',
-              balance: userData.balance || 0
-            });
-          }
+          users.push({
+            id: child.key,
+            name: userData.name || 'Unknown',
+            avatar: userData.avatar || 'https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true',
+            balance: userData.balance || 0
+          });
         });
         
         users.sort((a, b) => b.balance - a.balance);
@@ -2095,33 +2116,22 @@
         const top200 = users.slice(0, 200);
         
         let html = '';
-        
-        if (top200.length === 0) {
-          html = `
-            <div class="empty-state">
-              <div class="empty-state-icon">🦈</div>
-              <div class="empty-state-text">No Rankings Yet</div>
-              <div class="empty-state-subtext">Be the first to join the leaderboard!</div>
+        top200.forEach((user, index) => {
+          const position = index + 1;
+          const isTop3 = position <= 3;
+          
+          html += `
+            <div class="ranking-row">
+              <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
+              <img src="${user.avatar}" class="ranking-avatar" alt="${user.name}" />
+              <div class="ranking-user-info">
+                <div class="ranking-user-name">${user.name}</div>
+                <div class="ranking-user-id">ID: ${user.id}</div>
+              </div>
+              <div class="ranking-balance">${user.balance} SHB</div>
             </div>
           `;
-        } else {
-          top200.forEach((user, index) => {
-            const position = index + 1;
-            const isTop3 = position <= 3;
-            
-            html += `
-              <div class="ranking-row">
-                <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
-                <img src="${user.avatar}" class="ranking-avatar" alt="${user.name}" />
-                <div class="ranking-user-info">
-                  <div class="ranking-user-name">${user.name}</div>
-                  <div class="ranking-user-id">ID: ${user.id}</div>
-                </div>
-                <div class="ranking-balance">${user.balance} SHB</div>
-              </div>
-            `;
-          });
-        }
+        });
         
         document.getElementById('rankingList').innerHTML = html;
         document.getElementById('myPosition').textContent = myPosition > 0 ? `#${myPosition}` : 'Unranked';
@@ -2138,7 +2148,28 @@
       });
     });
     
-    // Initialize default profile sections
+    // Video Intro Handler
+    const introVideo = document.getElementById('intro-video');
+    
+    introVideo.addEventListener('ended', () => {
+      introVideo.style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    });
+    
+    introVideo.addEventListener('error', () => {
+      introVideo.style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    });
+    
+    // Fallback if video doesn't play
+    setTimeout(() => {
+      if (introVideo.style.display !== 'none') {
+        introVideo.style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+      }
+    }, 5000);
+    
+    // Initialize default profile sections if not exist
     db.ref('profileSections').once('value').then(snap => {
       if (!snap.exists()) {
         db.ref('profileSections').set({
