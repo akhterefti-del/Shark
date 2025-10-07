@@ -1530,6 +1530,7 @@
     let rankingListener = null;
     let referralCount = 0;
     let referralListener = null;
+    let pendingTaskRewards = {}; // Track tasks being processed
     
     // Utility Functions
     function now() {
@@ -2552,29 +2553,61 @@
             const taskId = this.dataset.taskId;
             const task = tasks[taskId];
             
+            // If task is already completed, just open the link
             if (userData.completedTasks && userData.completedTasks[taskId]) {
               window.open(task.link, '_blank');
               return;
             }
             
+            // Check if this task is already being processed
+            if (pendingTaskRewards[taskId]) {
+              notify('Task reward is already being processed!');
+              return;
+            }
+            
+            // Disable button immediately to prevent multiple clicks
+            this.disabled = true;
+            this.textContent = 'Processing...';
+            
+            // Mark task as pending
+            pendingTaskRewards[taskId] = true;
+            
+            // Open the task link
             window.open(task.link, '_blank');
             
-            notify('Complete the task. Reward will be added in 20 seconds...', 3000);
+            // Notify user about the 10-second wait
+            notify('Complete the task. Reward will be added in 10 seconds...', 3000);
             
+            // Set timeout for 10 seconds (changed from 20)
             setTimeout(() => {
+              // Double-check that task hasn't been completed yet (in case of race condition)
+              if (userData.completedTasks && userData.completedTasks[taskId]) {
+                delete pendingTaskRewards[taskId];
+                return;
+              }
+              
+              // Add reward
               coinsEarned += parseInt(task.amount);
               
+              // Mark task as completed
               if (!userData.completedTasks) userData.completedTasks = {};
               userData.completedTasks[taskId] = true;
               
+              // Update database
               updateUserData({
                 balance: coinsEarned,
                 completedTasks: userData.completedTasks
               });
               
+              // Remove from pending
+              delete pendingTaskRewards[taskId];
+              
+              // Notify user
               notify(`Earned ${task.amount} SHB!`);
+              
+              // Re-render the earn section to update UI
               renderEarn();
-            }, 20000);
+            }, 10000); // Changed from 20000 to 10000 (10 seconds)
           });
         });
       });
