@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="9970324" data-sdk="show_9970324"></script>
   
@@ -57,6 +60,73 @@
       -moz-osx-font-smoothing: grayscale;
     }
     
+    /* Loading Screen */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .loading-logo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(79, 172, 254, 0.5));
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .loading-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .loading-subtext {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-progress {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
     /* Intro Video */
     #intro-video {
       position: fixed;
@@ -65,8 +135,9 @@
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      z-index: 9999;
+      z-index: 9998;
       background: #000;
+      display: none;
     }
     
     /* Main App Container */
@@ -598,16 +669,29 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
     
-    .user-id-box {
-      display: inline-flex;
+    .user-info-box {
+      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 12px;
-      padding: 8px 16px;
+      padding: 12px 16px;
       border: 1px solid var(--card-border);
       margin-bottom: 8px;
+    }
+    
+    .user-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .user-id-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .user-id-label {
@@ -848,11 +932,11 @@
     .ranking-row {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 12px;
-      padding: 16px;
+      padding: 12px;
       margin-bottom: 8px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow-sm);
@@ -869,23 +953,53 @@
       font-size: 18px;
       font-weight: 800;
       color: #fff;
+      flex-shrink: 0;
     }
     
     .ranking-position-num.top3 {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
     
-    .ranking-user-id {
+    .ranking-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    
+    .ranking-user-info {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    
+    .ranking-user-name {
       font-size: 14px;
       font-weight: 600;
       color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .ranking-user-id {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     
     .ranking-balance {
       font-size: 16px;
       font-weight: 700;
       color: var(--accent-cyan);
+      flex-shrink: 0;
     }
     
     /* Notification */
@@ -903,6 +1017,8 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       z-index: 10000;
       animation: slideDown 0.3s ease;
+      max-width: 90%;
+      text-align: center;
     }
     
     @keyframes slideDown {
@@ -943,34 +1059,22 @@
       .stat-value {
         font-size: 18px;
       }
-      
-      .wallet-input-group {
-        gap: 8px;
-      }
-      
-      .input-field {
-        padding: 10px 14px;
-        font-size: 13px;
-      }
-      
-      .btn-secondary {
-        padding: 10px 20px;
-        font-size: 13px;
-      }
-      
-      .redeem-form-group {
-        gap: 8px;
-      }
-      
-      .redeem-input {
-        padding: 10px 14px;
-        font-size: 13px;
-      }
     }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
+         class="loading-logo" 
+         alt="Shark Bounty" />
+    <div class="loading-text">Shark Bounty</div>
+    <div class="loading-subtext">Initializing your account...</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
+  </div>
+  
   <!-- Intro Video -->
   <video id="intro-video" autoplay playsinline muted>
     <source src="https://github.com/s42144/Shark-Bounty/raw/8b67f2028cd3d33d6545243ea43a57958c428edf/29f4182c-fb84-4f6e-830f-f560ae571afe.mp4" type="video/mp4" />
@@ -1006,6 +1110,11 @@
   </div>
   
   <script>
+    // Telegram WebApp Initialization
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
+    
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHofuS76xf2oGPaJqEtopmcxdoJzjkDL4",
@@ -1023,6 +1132,8 @@
     
     // Global State
     let userId = null;
+    let userName = null;
+    let userAvatar = null;
     let userData = null;
     let energyTimer = null;
     let incomeTimer = null;
@@ -1045,6 +1156,13 @@
       return Math.floor(Date.now() / 1000);
     }
     
+    function updateLoadingProgress(text) {
+      const progressEl = document.getElementById('loadingProgress');
+      if (progressEl) {
+        progressEl.textContent = text;
+      }
+    }
+    
     function notify(message, duration = 2500) {
       const notification = document.createElement('div');
       notification.className = 'notification';
@@ -1056,47 +1174,96 @@
       }, duration);
     }
     
-    function getOrSetUserId() {
-      let id = localStorage.getItem('shb_userid');
+    function getTelegramUserData() {
+      updateLoadingProgress('Getting Telegram user data...');
       
-      // Check for referral parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const referralId = urlParams.get('ref') || urlParams.get('start');
+      const user = tg.initDataUnsafe?.user;
       
-      if (!id) {
-        id = Math.floor(10000 + Math.random() * 89999).toString();
-        localStorage.setItem('shb_userid', id);
+      if (user && user.id) {
+        userId = user.id.toString();
+        userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
         
-        // Process referral if exists
-        if (referralId && referralId.startsWith('r')) {
-          const referrerId = referralId.substring(1);
-          if (referrerId !== id) {
-            processReferral(referrerId);
-          }
+        // Get user photo URL if available
+        if (user.photo_url) {
+          userAvatar = user.photo_url;
+        } else {
+          userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
         }
+        
+        console.log('Telegram User ID:', userId);
+        console.log('Telegram User Name:', userName);
+        return true;
       }
       
-      userId = id;
+      // Fallback for testing outside Telegram
+      console.warn('Running outside Telegram environment - using test user');
+      userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
+      userName = 'Test User';
+      userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
+      return true;
     }
     
-    function processReferral(referrerId) {
-      db.ref('users/' + referrerId).once('value').then(snap => {
-        if (snap.exists()) {
-          const referrerData = snap.val();
-          const newReferralCount = (referrerData.referrals || 0) + 1;
-          const newBalance = (referrerData.balance || 0) + 500;
-          
-          db.ref('users/' + referrerId).update({
-            referrals: newReferralCount,
-            balance: newBalance
-          });
-          
-          // Store referrer in new user's data
-          db.ref('users/' + userId).update({
-            referredBy: referrerId
+    function processReferral() {
+      updateLoadingProgress('Processing referral...');
+      
+      const startParam = tg.initDataUnsafe?.start_param;
+      console.log('Start Param:', startParam);
+      
+      if (startParam) {
+        let referrerId = null;
+        
+        // Handle both formats: r123456 or just 123456
+        if (startParam.startsWith('r')) {
+          referrerId = startParam.substring(1);
+        } else {
+          referrerId = startParam;
+        }
+        
+        console.log('Referrer ID:', referrerId);
+        console.log('Current User ID:', userId);
+        
+        if (referrerId && referrerId !== userId) {
+          // Check if user was already referred
+          db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
+            if (!snap.exists()) {
+              console.log('Processing new referral...');
+              
+              // First time being referred
+              db.ref('users/' + referrerId).once('value').then(refSnap => {
+                if (refSnap.exists()) {
+                  console.log('Referrer found in database');
+                  
+                  const referrerData = refSnap.val();
+                  const newBalance = (referrerData.balance || 0) + 5000;
+                  
+                  // Update referrer's balance
+                  db.ref('users/' + referrerId).update({
+                    balance: newBalance,
+                    lastUpdated: now()
+                  }).then(() => {
+                    console.log('Referrer balance updated to:', newBalance);
+                  });
+                  
+                  // Store referrer in new user's data
+                  db.ref('users/' + userId).update({
+                    referredBy: referrerId,
+                    referredAt: now()
+                  }).then(() => {
+                    console.log('Referral link saved for user');
+                    notify('Welcome! Your referrer earned 5000 SHB!', 3000);
+                  });
+                } else {
+                  console.log('Referrer not found in database');
+                }
+              });
+            } else {
+              console.log('User was already referred by:', snap.val());
+            }
           });
         }
-      });
+      } else {
+        console.log('No referral parameter found');
+      }
     }
     
     function saveLastSeenData() {
@@ -1112,6 +1279,9 @@
     window.addEventListener('beforeunload', saveLastSeenData);
     window.addEventListener('unload', saveLastSeenData);
     
+    // Auto-save every 30 seconds
+    setInterval(saveLastSeenData, 30000);
+    
     function getOfflineTime(snap) {
       const lastSeen = snap.val() && snap.val().lastSeen;
       if (!lastSeen) return 0;
@@ -1121,11 +1291,14 @@
     
     // Load User Data
     function loadUserData() {
+      updateLoadingProgress('Loading your data...');
+      
       db.ref('users/' + userId).once('value').then(snap => {
         const offlineTime = getOfflineTime(snap);
         
         if (snap.exists()) {
           userData = snap.val();
+          console.log('Existing user data loaded');
         } else {
           userData = {
             balance: 0,
@@ -1136,16 +1309,29 @@
             multiTapCount: 0,
             maxEnergyUpCount: 0,
             ton: "",
-            avatar: "https://github.com/akhterefti-del/Shark/blob/43434e64fd7f0a55152c5e982b6a95f2c0496c5b/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true",
+            avatar: userAvatar,
+            name: userName,
             referrals: 0,
             eject: 0,
             completedTasks: {},
             adStats: { today: 0, daily: 0, monthly: 0, lifetime: 0 },
             lastSeen: now(),
             lastBalance: 0,
-            lastEnergy: 1200
+            lastEnergy: 1200,
+            createdAt: now()
           };
           db.ref('users/' + userId).set(userData);
+          console.log('New user created');
+        }
+        
+        // Update user name and avatar if changed
+        if (userData.name !== userName || userData.avatar !== userAvatar) {
+          db.ref('users/' + userId).update({
+            name: userName,
+            avatar: userAvatar
+          });
+          userData.name = userName;
+          userData.avatar = userAvatar;
         }
         
         // Handle offline energy recovery (0.5 per second)
@@ -1159,6 +1345,9 @@
         if (incomeBooster) {
           const offlineIncome = Math.floor(offlineTime / 10);
           balance += offlineIncome;
+          if (offlineIncome > 0) {
+            notify(`Earned ${offlineIncome} SHB while offline!`);
+          }
         }
         
         // Update state
@@ -1181,6 +1370,17 @@
           lastBalance: balance,
           lastEnergy: userData.energy
         });
+        
+        // Process referral if exists
+        processReferral();
+        
+        // Hide loading screen and show video
+        updateLoadingProgress('Starting app...');
+        
+        setTimeout(() => {
+          document.getElementById('loading-screen').style.display = 'none';
+          document.getElementById('intro-video').style.display = 'block';
+        }, 1000);
         
         showTab('home');
         setupIncomeBooster();
@@ -1407,7 +1607,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">💰</div>
+              <div class="booster-icon">💲</div>
               <div class="booster-info">
                 <div class="booster-title">Passive Income</div>
                 <div class="booster-price">100,000 SHB</div>
@@ -1711,11 +1911,6 @@
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
             
-            // Update referral count if different
-            if (actualReferralCount !== (userData.referrals || 0)) {
-              updateUserData({ referrals: actualReferralCount });
-            }
-            
             let sectionsHTML = '';
             profileSections.forEach(section => {
               sectionsHTML += `
@@ -1733,13 +1928,16 @@
                     <div class="avatar-glow"></div>
                     <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
                   </div>
-                  <div class="user-id-box">
-                    <span class="user-id-label">ID:</span>
-                    <span class="user-id-value">${userId}</span>
-                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                         class="copy-icon" 
-                         id="copyUserId" 
-                         alt="Copy" />
+                  <div class="user-info-box">
+                    <div class="user-name">${userData.name}</div>
+                    <div class="user-id-row">
+                      <span class="user-id-label">ID:</span>
+                      <span class="user-id-value">${userId}</span>
+                      <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                           class="copy-icon" 
+                           id="copyUserId" 
+                           alt="Copy" />
+                    </div>
                   </div>
                 </div>
                 
@@ -1771,7 +1969,7 @@
                     </div>
                     <div class="referral-stat">
                       <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${actualReferralCount * 500}</div>
+                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
                     </div>
                   </div>
                 </div>
@@ -1801,7 +1999,7 @@
               });
             });
             
-            // Save TON Wallet - Send to admin panel
+            // Save TON Wallet
             document.getElementById('saveTonWallet').addEventListener('click', () => {
               const wallet = document.getElementById('tonWallet').value.trim();
               if (wallet.length < 10) {
@@ -1809,18 +2007,18 @@
                 return;
               }
               
-              // Save to user data
               updateUserData({ ton: wallet });
               
               // Send to admin panel
               db.ref('admin/tonSubmissions').push({
                 userId: userId,
+                userName: userName,
                 walletAddress: wallet,
                 timestamp: now(),
                 balance: coinsEarned
               });
               
-              notify('TON wallet saved successfully and sent to admin!');
+              notify('TON wallet saved successfully!');
             });
             
             // Copy Referral Link
@@ -1903,9 +2101,12 @@
         const users = [];
         
         snap.forEach(child => {
+          const userData = child.val();
           users.push({
             id: child.key,
-            balance: child.val().balance || 0
+            name: userData.name || 'Unknown',
+            avatar: userData.avatar || 'https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true',
+            balance: userData.balance || 0
           });
         });
         
@@ -1922,8 +2123,12 @@
           html += `
             <div class="ranking-row">
               <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
-              <div class="ranking-user-id">ID: ${user.id}</div>
-              <div class="ranking-balance">${user.balance}</div>
+              <img src="${user.avatar}" class="ranking-avatar" alt="${user.name}" />
+              <div class="ranking-user-info">
+                <div class="ranking-user-name">${user.name}</div>
+                <div class="ranking-user-id">ID: ${user.id}</div>
+              </div>
+              <div class="ranking-balance">${user.balance} SHB</div>
             </div>
           `;
         });
@@ -1949,15 +2154,11 @@
     introVideo.addEventListener('ended', () => {
       introVideo.style.display = 'none';
       document.getElementById('app').style.display = 'block';
-      getOrSetUserId();
-      loadUserData();
     });
     
     introVideo.addEventListener('error', () => {
       introVideo.style.display = 'none';
       document.getElementById('app').style.display = 'block';
-      getOrSetUserId();
-      loadUserData();
     });
     
     // Fallback if video doesn't play
@@ -1965,8 +2166,6 @@
       if (introVideo.style.display !== 'none') {
         introVideo.style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        getOrSetUserId();
-        loadUserData();
       }
     }, 5000);
     
@@ -1987,6 +2186,13 @@
         });
       }
     });
+    
+    // Initialize App
+    if (getTelegramUserData()) {
+      loadUserData();
+    } else {
+      notify('Failed to initialize Telegram user data');
+    }
   </script>
 </body>
 </html>
