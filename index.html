@@ -709,14 +709,14 @@
       transition: all 0.3s ease;
     }
     
-    .milestone-item.completed {
+    .milestone-item.unlocked {
       border-color: var(--accent-cyan);
       background: rgba(79, 172, 254, 0.1);
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
     }
     
-    .milestone-item.claimed {
-      border-color: var(--accent-gold);
-      background: rgba(255, 215, 0, 0.1);
+    .milestone-item.locked {
+      opacity: 0.6;
     }
     
     .milestone-info {
@@ -742,13 +742,6 @@
       margin-top: 4px;
     }
     
-    .milestone-cycle {
-      font-size: 11px;
-      color: var(--accent-gold);
-      margin-top: 2px;
-      font-weight: 600;
-    }
-    
     .milestone-btn {
       padding: 10px 20px;
       background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -769,9 +762,15 @@
       cursor: not-allowed;
     }
     
-    .milestone-btn.claimed {
+    .milestone-btn.unlocked {
       background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
       color: #1e3c72;
+      animation: glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
     }
     
     /* Task Card */
@@ -1506,6 +1505,7 @@
     let userData = null;
     let energyTimer = null;
     let incomeTimer = null;
+    let balanceListener = null;
     let adStats = { 
       today: 0, 
       yesterday: 0, 
@@ -1515,10 +1515,6 @@
       lastAdDate: null,
       lastWeekReset: null,
       lastMonthReset: null
-    };
-    let milestoneProgress = {
-      currentCycle: 0,
-      adsInCurrentCycle: 0
     };
     let booster = {
       energy: 1200,
@@ -1785,27 +1781,34 @@
       });
     }
     
-    function calculateMilestoneProgress() {
-      const lifetime = adStats.lifetime;
-      const currentCycle = Math.floor(lifetime / 500);
-      const adsInCurrentCycle = lifetime % 500;
+    function setupBalanceListener() {
+      if (balanceListener) {
+        balanceListener.off();
+      }
       
-      milestoneProgress = {
-        currentCycle: currentCycle,
-        adsInCurrentCycle: adsInCurrentCycle
-      };
+      balanceListener = db.ref('users/' + userId + '/balance');
       
-      return milestoneProgress;
+      balanceListener.on('value', (snapshot) => {
+        const newBalance = snapshot.val();
+        if (newBalance !== null && newBalance !== coinsEarned) {
+          console.log('Balance updated from Firebase:', newBalance);
+          coinsEarned = newBalance;
+          
+          const balanceEl = document.getElementById('homeBalance');
+          if (balanceEl) {
+            balanceEl.textContent = coinsEarned;
+          }
+        }
+      });
     }
     
-    function getMilestoneStatus() {
-      const progress = calculateMilestoneProgress();
-      const adsInCycle = progress.adsInCurrentCycle;
+    function getMilestoneStatus(lifetimeAds) {
+      const adsInCurrentCycle = lifetimeAds % 500;
       
       return {
-        milestone100: adsInCycle >= 100,
-        milestone200: adsInCycle >= 200,
-        milestone500: adsInCycle >= 500
+        milestone100: adsInCurrentCycle >= 100,
+        milestone200: adsInCurrentCycle >= 200,
+        milestone500: adsInCurrentCycle >= 500
       };
     }
     
@@ -1843,9 +1846,7 @@
               lastWeekReset: getWeekStart(),
               lastMonthReset: getMonthStart()
             },
-            milestoneProgress: {
-              currentCycle: 0,
-              adsInCurrentCycle: 0,
+            milestones: {
               milestone100Claimed: false,
               milestone200Claimed: false,
               milestone500Claimed: false
@@ -1905,12 +1906,8 @@
           };
         }
         
-        if (userData.milestoneProgress) {
-          milestoneProgress = userData.milestoneProgress;
-        } else {
-          milestoneProgress = {
-            currentCycle: 0,
-            adsInCurrentCycle: 0,
+        if (!userData.milestones) {
+          userData.milestones = {
             milestone100Claimed: false,
             milestone200Claimed: false,
             milestone500Claimed: false
@@ -1918,9 +1915,9 @@
         }
         
         resetAdStatsIfNeeded();
-        calculateMilestoneProgress();
         
         setupReferralListener();
+        setupBalanceListener();
         
         db.ref('users/' + userId).update({
           energy: userData.energy,
@@ -1957,7 +1954,6 @@
       if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
       if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
       if (newData.adStats !== undefined) adStats = newData.adStats;
-      if (newData.milestoneProgress !== undefined) milestoneProgress = newData.milestoneProgress;
       if (newData.referrals !== undefined) referralCount = newData.referrals;
     }
     
@@ -2250,19 +2246,18 @@
     
     function renderEarn() {
       resetAdStatsIfNeeded();
-      calculateMilestoneProgress();
       
-      const progress = milestoneProgress;
-      const adsInCycle = progress.adsInCurrentCycle;
-      const currentCycle = progress.currentCycle;
+      const lifetimeAds = adStats.lifetime;
+      const adsInCurrentCycle = lifetimeAds % 500;
       
-      const milestone100Unlocked = adsInCycle >= 100;
-      const milestone200Unlocked = adsInCycle >= 200;
-      const milestone500Unlocked = adsInCycle >= 500;
+      const milestoneStatus = getMilestoneStatus(lifetimeAds);
+      const milestone100Unlocked = milestoneStatus.milestone100;
+      const milestone200Unlocked = milestoneStatus.milestone200;
+      const milestone500Unlocked = milestoneStatus.milestone500;
       
-      const milestone100Claimed = progress.milestone100Claimed || false;
-      const milestone200Claimed = progress.milestone200Claimed || false;
-      const milestone500Claimed = progress.milestone500Claimed || false;
+      const milestone100Claimed = userData.milestones?.milestone100Claimed || false;
+      const milestone200Claimed = userData.milestones?.milestone200Claimed || false;
+      const milestone500Claimed = userData.milestones?.milestone500Claimed || false;
       
       const html = `
         <div class="earn-main">
@@ -2305,48 +2300,45 @@
           <div class="milestone-card">
             <div class="milestone-title">
               <span class="milestone-icon">🏆</span>
-              <span>Milestone Rewards (Cycle ${currentCycle + 1})</span>
+              <span>Milestone Rewards</span>
             </div>
             
-            <div class="milestone-item ${milestone100Unlocked ? 'completed' : ''} ${milestone100Claimed ? 'claimed' : ''}">
+            <div class="milestone-item ${milestone100Unlocked && !milestone100Claimed ? 'unlocked' : 'locked'}">
               <div class="milestone-info">
                 <div class="milestone-target">100 Ads Milestone</div>
                 <div class="milestone-reward">Reward: 5,000 SHB</div>
-                <div class="milestone-progress">${adsInCycle}/100 ads in current cycle</div>
-                <div class="milestone-cycle">Total lifetime: ${adStats.lifetime} ads</div>
+                <div class="milestone-progress">${adsInCurrentCycle}/100 ads in current cycle</div>
               </div>
-              <button class="milestone-btn ${milestone100Claimed ? 'claimed' : ''}" 
+              <button class="milestone-btn ${milestone100Unlocked && !milestone100Claimed ? 'unlocked' : ''}" 
                       id="claim100" 
                       ${!milestone100Unlocked || milestone100Claimed ? 'disabled' : ''}>
-                ${milestone100Claimed ? '✓ Claimed' : (milestone100Unlocked ? 'Claim' : 'Locked')}
+                ${milestone100Claimed ? 'Claimed' : (milestone100Unlocked ? 'Claim Now!' : 'Locked')}
               </button>
             </div>
             
-            <div class="milestone-item ${milestone200Unlocked ? 'completed' : ''} ${milestone200Claimed ? 'claimed' : ''}">
+            <div class="milestone-item ${milestone200Unlocked && !milestone200Claimed ? 'unlocked' : 'locked'}">
               <div class="milestone-info">
                 <div class="milestone-target">200 Ads Milestone</div>
                 <div class="milestone-reward">Reward: 10,000 SHB</div>
-                <div class="milestone-progress">${adsInCycle}/200 ads in current cycle</div>
-                <div class="milestone-cycle">Total lifetime: ${adStats.lifetime} ads</div>
+                <div class="milestone-progress">${adsInCurrentCycle}/200 ads in current cycle</div>
               </div>
-              <button class="milestone-btn ${milestone200Claimed ? 'claimed' : ''}" 
+              <button class="milestone-btn ${milestone200Unlocked && !milestone200Claimed ? 'unlocked' : ''}" 
                       id="claim200" 
                       ${!milestone200Unlocked || milestone200Claimed ? 'disabled' : ''}>
-                ${milestone200Claimed ? '✓ Claimed' : (milestone200Unlocked ? 'Claim' : 'Locked')}
+                ${milestone200Claimed ? 'Claimed' : (milestone200Unlocked ? 'Claim Now!' : 'Locked')}
               </button>
             </div>
             
-            <div class="milestone-item ${milestone500Unlocked ? 'completed' : ''} ${milestone500Claimed ? 'claimed' : ''}">
+            <div class="milestone-item ${milestone500Unlocked && !milestone500Claimed ? 'unlocked' : 'locked'}">
               <div class="milestone-info">
                 <div class="milestone-target">500 Ads Milestone</div>
                 <div class="milestone-reward">Reward: 20,000 SHB</div>
-                <div class="milestone-progress">${adsInCycle}/500 ads in current cycle</div>
-                <div class="milestone-cycle">Total lifetime: ${adStats.lifetime} ads</div>
+                <div class="milestone-progress">${adsInCurrentCycle}/500 ads in current cycle</div>
               </div>
-              <button class="milestone-btn ${milestone500Claimed ? 'claimed' : ''}" 
+              <button class="milestone-btn ${milestone500Unlocked && !milestone500Claimed ? 'unlocked' : ''}" 
                       id="claim500" 
                       ${!milestone500Unlocked || milestone500Claimed ? 'disabled' : ''}>
-                ${milestone500Claimed ? '✓ Claimed' : (milestone500Unlocked ? 'Claim' : 'Locked')}
+                ${milestone500Claimed ? 'Claimed' : (milestone500Unlocked ? 'Claim Now!' : 'Locked')}
               </button>
             </div>
           </div>
@@ -2375,23 +2367,22 @@
             adStats.lifetime++;
             adStats.lastAdDate = getToday();
             
-            const newProgress = calculateMilestoneProgress();
+            const newAdsInCycle = adStats.lifetime % 500;
             
-            if (newProgress.adsInCurrentCycle === 0 && adStats.lifetime > 0) {
-              milestoneProgress.milestone100Claimed = false;
-              milestoneProgress.milestone200Claimed = false;
-              milestoneProgress.milestone500Claimed = false;
+            if (newAdsInCycle === 0 && adStats.lifetime > 0) {
+              userData.milestones = {
+                milestone100Claimed: false,
+                milestone200Claimed: false,
+                milestone500Claimed: false
+              };
               
               notify('New milestone cycle started! All rewards reset!', 3000);
             }
             
-            milestoneProgress.currentCycle = newProgress.currentCycle;
-            milestoneProgress.adsInCurrentCycle = newProgress.adsInCurrentCycle;
-            
             updateUserData({
               balance: coinsEarned,
               adStats: adStats,
-              milestoneProgress: milestoneProgress
+              milestones: userData.milestones
             });
             
             notify('Earned 500 SHB for watching ad!');
@@ -2411,14 +2402,14 @@
       document.getElementById('claim100').addEventListener('click', () => {
         if (milestone100Unlocked && !milestone100Claimed) {
           coinsEarned += 5000;
-          milestoneProgress.milestone100Claimed = true;
+          userData.milestones.milestone100Claimed = true;
           
           updateUserData({
             balance: coinsEarned,
-            milestoneProgress: milestoneProgress
+            milestones: userData.milestones
           });
           
-          notify(`Claimed 5,000 SHB milestone reward! (Cycle ${currentCycle + 1})`);
+          notify('Claimed 5,000 SHB milestone reward!');
           renderEarn();
         }
       });
@@ -2426,14 +2417,14 @@
       document.getElementById('claim200').addEventListener('click', () => {
         if (milestone200Unlocked && !milestone200Claimed) {
           coinsEarned += 10000;
-          milestoneProgress.milestone200Claimed = true;
+          userData.milestones.milestone200Claimed = true;
           
           updateUserData({
             balance: coinsEarned,
-            milestoneProgress: milestoneProgress
+            milestones: userData.milestones
           });
           
-          notify(`Claimed 10,000 SHB milestone reward! (Cycle ${currentCycle + 1})`);
+          notify('Claimed 10,000 SHB milestone reward!');
           renderEarn();
         }
       });
@@ -2441,24 +2432,24 @@
       document.getElementById('claim500').addEventListener('click', () => {
         if (milestone500Unlocked && !milestone500Claimed) {
           coinsEarned += 20000;
-          milestoneProgress.milestone500Claimed = true;
+          userData.milestones.milestone500Claimed = true;
           
           updateUserData({
             balance: coinsEarned,
-            milestoneProgress: milestoneProgress
+            milestones: userData.milestones
           });
           
-          notify(`Claimed 20,000 SHB milestone reward! (Cycle ${currentCycle + 1})`);
+          notify('Claimed 20,000 SHB milestone reward!');
           
           setTimeout(() => {
-            milestoneProgress.milestone100Claimed = false;
-            milestoneProgress.milestone200Claimed = false;
-            milestoneProgress.milestone500Claimed = false;
-            milestoneProgress.currentCycle++;
-            milestoneProgress.adsInCurrentCycle = 0;
+            userData.milestones = {
+              milestone100Claimed: false,
+              milestone200Claimed: false,
+              milestone500Claimed: false
+            };
             
             updateUserData({
-              milestoneProgress: milestoneProgress
+              milestones: userData.milestones
             });
             
             notify('Milestone cycle completed! Starting new cycle...', 3000);
