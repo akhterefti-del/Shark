@@ -128,6 +128,114 @@
       font-weight: 600;
     }
     
+    /* Referral Welcome Screen */
+    #referral-welcome {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      padding: 20px;
+    }
+    
+    .welcome-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      animation: slideUp 0.5s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .welcome-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    
+    .welcome-message {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    
+    .referrer-info {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .referrer-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    
+    .referrer-details {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .referrer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+    }
+    
+    .referrer-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .referrer-id {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .welcome-countdown {
+      font-size: 14px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    
     /* Main App Container */
     #app {
       display: none;
@@ -902,6 +1010,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 12px;
+      margin-bottom: 16px;
     }
     
     .referral-stat {
@@ -924,6 +1033,26 @@
       font-size: 20px;
       font-weight: 700;
       color: var(--accent-cyan);
+    }
+    
+    .btn-view-referrals {
+      width: 100%;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-view-referrals:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(240, 147, 251, 0.4);
     }
     
     .section-link-card {
@@ -991,6 +1120,128 @@
       color: var(--text-secondary);
       letter-spacing: normal;
       font-weight: 400;
+    }
+    
+    /* Referral List Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .referral-list-item {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .referral-list-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    
+    .referral-list-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .referral-list-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .referral-list-id {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .referral-list-balance {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+    
+    .referral-list-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
     }
     
     /* Ranking Section */
@@ -1167,6 +1418,26 @@
     <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
   </div>
   
+  <!-- Referral Welcome Screen -->
+  <div id="referral-welcome">
+    <div class="welcome-card">
+      <div class="welcome-icon">🎉</div>
+      <div class="welcome-title">Welcome!</div>
+      <div class="welcome-message">You've been invited to join Shark Bounty</div>
+      <div class="referrer-info">
+        <div class="referrer-label">Your Referrer</div>
+        <div class="referrer-details">
+          <img id="referrerAvatar" src="" class="referrer-avatar" alt="Referrer" />
+          <div>
+            <div class="referrer-name" id="referrerName">Loading...</div>
+            <div class="referrer-id" id="referrerId">ID: ...</div>
+          </div>
+        </div>
+      </div>
+      <div class="welcome-countdown" id="welcomeCountdown">Starting in 5 seconds...</div>
+    </div>
+  </div>
+  
   <!-- Main App -->
   <div id="app">
     <div id="main-content"></div>
@@ -1193,6 +1464,17 @@
         <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/rankingbtn%20(1).png?raw=true" alt="Ranking" class="nav-icon" />
         <span class="nav-label">Ranking</span>
       </button>
+    </div>
+  </div>
+  
+  <!-- Referral List Modal -->
+  <div class="modal-overlay" id="referralModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">My Referrals</div>
+        <button class="modal-close" id="closeReferralModal">×</button>
+      </div>
+      <div id="referralListContent"></div>
     </div>
   </div>
   
@@ -1327,76 +1609,109 @@
       return true;
     }
     
+    function showReferralWelcome(referrerId) {
+      return new Promise((resolve) => {
+        db.ref('users/' + referrerId).once('value').then(snap => {
+          if (snap.exists()) {
+            const referrerData = snap.val();
+            
+            document.getElementById('referrerAvatar').src = referrerData.avatar || userAvatar;
+            document.getElementById('referrerName').textContent = referrerData.name || 'Unknown';
+            document.getElementById('referrerId').textContent = 'ID: ' + referrerId;
+            
+            document.getElementById('referral-welcome').style.display = 'flex';
+            
+            let countdown = 5;
+            const countdownEl = document.getElementById('welcomeCountdown');
+            
+            const countdownInterval = setInterval(() => {
+              countdown--;
+              if (countdown > 0) {
+                countdownEl.textContent = `Starting in ${countdown} seconds...`;
+              } else {
+                clearInterval(countdownInterval);
+                document.getElementById('referral-welcome').style.display = 'none';
+                resolve();
+              }
+            }, 1000);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+    
     function processReferral() {
-      updateLoadingProgress('Processing referral...');
-      
-      const startParam = tg.initDataUnsafe?.start_param;
-      console.log('Start Param:', startParam);
-      
-      if (startParam) {
-        let referrerId = null;
+      return new Promise((resolve) => {
+        updateLoadingProgress('Processing referral...');
         
-        if (startParam.startsWith('r')) {
-          referrerId = startParam.substring(1);
-        } else {
-          referrerId = startParam;
-        }
+        const startParam = tg.initDataUnsafe?.start_param;
+        console.log('Start Param:', startParam);
         
-        console.log('Referrer ID:', referrerId);
-        console.log('Current User ID:', userId);
-        
-        if (referrerId && referrerId !== userId) {
-          db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
-            if (!snap.exists()) {
-              console.log('Processing new referral...');
-              
-              db.ref('users/' + referrerId).once('value').then(refSnap => {
-                if (refSnap.exists()) {
-                  console.log('Referrer found in database');
-                  
-                  const referrerData = refSnap.val();
-                  const newBalance = (referrerData.balance || 0) + 5000;
-                  
-                  // Update referrer's balance
-                  db.ref('users/' + referrerId).update({
-                    balance: newBalance,
-                    lastUpdated: now()
-                  }).then(() => {
-                    console.log('Referrer balance updated to:', newBalance);
-                  });
-                  
-                  // Store referrer in new user's data
-                  db.ref('users/' + userId).update({
-                    referredBy: referrerId,
-                    referredAt: now()
-                  }).then(() => {
-                    console.log('Referral link saved for user');
+        if (startParam) {
+          let referrerId = startParam;
+          
+          console.log('Referrer ID:', referrerId);
+          console.log('Current User ID:', userId);
+          
+          if (referrerId && referrerId !== userId) {
+            db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
+              if (!snap.exists()) {
+                console.log('Processing new referral...');
+                
+                db.ref('users/' + referrerId).once('value').then(refSnap => {
+                  if (refSnap.exists()) {
+                    console.log('Referrer found in database');
                     
-                    // Send notification to admin
-                    db.ref('admin/notifications').push({
-                      type: 'new_referral',
-                      referrerId: referrerId,
-                      referrerName: referrerData.name || 'Unknown',
-                      newUserId: userId,
-                      newUserName: userName,
-                      timestamp: now(),
-                      reward: 5000
+                    showReferralWelcome(referrerId).then(() => {
+                      const referrerData = refSnap.val();
+                      const newBalance = (referrerData.balance || 0) + 5000;
+                      
+                      db.ref('users/' + referrerId).update({
+                        balance: newBalance,
+                        lastUpdated: now()
+                      }).then(() => {
+                        console.log('Referrer balance updated to:', newBalance);
+                      });
+                      
+                      db.ref('users/' + userId).update({
+                        referredBy: referrerId,
+                        referredAt: now()
+                      }).then(() => {
+                        console.log('Referral link saved for user');
+                        
+                        db.ref('admin/notifications').push({
+                          type: 'new_referral',
+                          referrerId: referrerId,
+                          referrerName: referrerData.name || 'Unknown',
+                          newUserId: userId,
+                          newUserName: userName,
+                          timestamp: now(),
+                          reward: 5000
+                        });
+                        
+                        notify('Welcome! Your referrer earned 5000 SHB!', 3000);
+                        resolve();
+                      });
                     });
-                    
-                    notify('Welcome! Your referrer earned 5000 SHB!', 3000);
-                  });
-                } else {
-                  console.log('Referrer not found in database');
-                }
-              });
-            } else {
-              console.log('User was already referred by:', snap.val());
-            }
-          });
+                  } else {
+                    console.log('Referrer not found in database');
+                    resolve();
+                  }
+                });
+              } else {
+                console.log('User was already referred by:', snap.val());
+                resolve();
+              }
+            });
+          } else {
+            resolve();
+          }
+        } else {
+          console.log('No referral parameter found');
+          resolve();
         }
-      } else {
-        console.log('No referral parameter found');
-      }
+      });
     }
     
     function saveLastSeenData() {
@@ -1443,7 +1758,6 @@
       }
     }
     
-    // Setup real-time referral listener
     function setupReferralListener() {
       if (referralListener) {
         referralListener.off();
@@ -1457,7 +1771,6 @@
         const count = snapshot.numChildren();
         referralCount = count;
         
-        // Update UI if on profile tab
         const referralValueEl = document.querySelector('.referral-stat-value');
         const referralEarningsEl = document.querySelectorAll('.referral-stat-value')[1];
         
@@ -1472,7 +1785,6 @@
       });
     }
     
-    // Calculate milestone progress
     function calculateMilestoneProgress() {
       const lifetime = adStats.lifetime;
       const currentCycle = Math.floor(lifetime / 500);
@@ -1486,7 +1798,6 @@
       return milestoneProgress;
     }
     
-    // Check if milestone should be unlocked
     function getMilestoneStatus() {
       const progress = calculateMilestoneProgress();
       const adsInCycle = progress.adsInCurrentCycle;
@@ -1498,7 +1809,6 @@
       };
     }
     
-    // Load User Data
     function loadUserData() {
       updateLoadingProgress('Loading your data...');
       
@@ -1610,7 +1920,6 @@
         resetAdStatsIfNeeded();
         calculateMilestoneProgress();
         
-        // Setup real-time referral tracking
         setupReferralListener();
         
         db.ref('users/' + userId).update({
@@ -1622,17 +1931,17 @@
           adStats: adStats
         });
         
-        processReferral();
-        
-        updateLoadingProgress('Starting app...');
-        
-        setTimeout(() => {
-          document.getElementById('loading-screen').style.display = 'none';
-          document.getElementById('app').style.display = 'block';
-        }, 1000);
-        
-        showTab('home');
-        setupIncomeBooster();
+        processReferral().then(() => {
+          updateLoadingProgress('Starting app...');
+          
+          setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+          }, 1000);
+          
+          showTab('home');
+          setupIncomeBooster();
+        });
       });
     }
     
@@ -1652,7 +1961,6 @@
       if (newData.referrals !== undefined) referralCount = newData.referrals;
     }
     
-    // Navigation
     function showTab(tab) {
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
@@ -1665,7 +1973,6 @@
       if (tab === 'ranking') renderRanking();
     }
     
-    // Home Section
     function renderHome() {
       const profit = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
       
@@ -1803,7 +2110,6 @@
       }
     }
     
-    // Booster Section
     function renderBooster() {
       const maxEnergyDisabled = (booster.maxEnergyUpCount || 0) >= 10;
       const multiTapDisabled = (booster.multiTapCount || 0) >= 3;
@@ -1942,7 +2248,6 @@
       });
     }
     
-    // Earn Section
     function renderEarn() {
       resetAdStatsIfNeeded();
       calculateMilestoneProgress();
@@ -1951,7 +2256,6 @@
       const adsInCycle = progress.adsInCurrentCycle;
       const currentCycle = progress.currentCycle;
       
-      // Check milestone status
       const milestone100Unlocked = adsInCycle >= 100;
       const milestone200Unlocked = adsInCycle >= 200;
       const milestone500Unlocked = adsInCycle >= 500;
@@ -2071,12 +2375,9 @@
             adStats.lifetime++;
             adStats.lastAdDate = getToday();
             
-            // Recalculate milestone progress
             const newProgress = calculateMilestoneProgress();
             
-            // Check if cycle completed (reached 500 ads)
             if (newProgress.adsInCurrentCycle === 0 && adStats.lifetime > 0) {
-              // Reset milestone claims for new cycle
               milestoneProgress.milestone100Claimed = false;
               milestoneProgress.milestone200Claimed = false;
               milestoneProgress.milestone500Claimed = false;
@@ -2149,7 +2450,6 @@
           
           notify(`Claimed 20,000 SHB milestone reward! (Cycle ${currentCycle + 1})`);
           
-          // After claiming 500 milestone, reset for next cycle
           setTimeout(() => {
             milestoneProgress.milestone100Claimed = false;
             milestoneProgress.milestone200Claimed = false;
@@ -2266,10 +2566,8 @@
               return;
             }
             
-            // Open task link
             window.open(task.link, '_blank');
             
-            // Wait 20 seconds before adding reward
             notify('Complete the task. Reward will be added in 20 seconds...', 3000);
             
             setTimeout(() => {
@@ -2291,7 +2589,39 @@
       });
     }
     
-    // Profile Section
+    function showReferralList() {
+      const modal = document.getElementById('referralModal');
+      const content = document.getElementById('referralListContent');
+      
+      db.ref('users')
+        .orderByChild('referredBy')
+        .equalTo(userId)
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.numChildren() === 0) {
+            content.innerHTML = '<div class="referral-list-empty">You haven\'t referred anyone yet. Share your referral link to start earning!</div>';
+          } else {
+            let html = '';
+            snapshot.forEach(child => {
+              const referredUser = child.val();
+              html += `
+                <div class="referral-list-item">
+                  <img src="${referredUser.avatar || userAvatar}" class="referral-list-avatar" alt="${referredUser.name}" />
+                  <div class="referral-list-info">
+                    <div class="referral-list-name">${referredUser.name || 'Unknown'}</div>
+                    <div class="referral-list-id">ID: ${child.key}</div>
+                    <div class="referral-list-balance">${referredUser.balance || 0} SHB</div>
+                  </div>
+                </div>
+              `;
+            });
+            content.innerHTML = html;
+          }
+          
+          modal.style.display = 'flex';
+        });
+    }
+    
     function renderProfile() {
       loadProfileSections().then(() => {
         let sectionsHTML = '';
@@ -2339,7 +2669,7 @@
             <div class="profile-card">
               <div class="card-title">Referral Program</div>
               <div class="referral-link-box">
-                <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
+                <span class="referral-link" id="referralLink">https://t.me/SharkBountybot/myapp?startapp=${userId}</span>
                 <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
                      class="copy-icon" 
                      id="copyReferralLink" 
@@ -2355,6 +2685,7 @@
                   <div class="referral-stat-value">${referralCount * 5000}</div>
                 </div>
               </div>
+              <button class="btn-view-referrals" id="viewReferralsBtn">View My Referrals</button>
             </div>
             
             ${sectionsHTML}
@@ -2408,6 +2739,10 @@
           });
         });
         
+        document.getElementById('viewReferralsBtn').addEventListener('click', () => {
+          showReferralList();
+        });
+        
         document.getElementById('redeemBtn').addEventListener('click', () => {
           const code = document.getElementById('redeemCode').value.trim();
           if (code.length !== 4) {
@@ -2449,7 +2784,6 @@
       });
     }
     
-    // Ranking Section
     function renderRanking() {
       const html = `
         <div class="ranking-main">
@@ -2516,14 +2850,22 @@
       rankingListener = usersRef;
     }
     
-    // Navigation Setup
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         showTab(this.dataset.tab);
       });
     });
     
-    // Initialize default profile sections if not exist
+    document.getElementById('closeReferralModal').addEventListener('click', () => {
+      document.getElementById('referralModal').style.display = 'none';
+    });
+    
+    document.getElementById('referralModal').addEventListener('click', (e) => {
+      if (e.target.id === 'referralModal') {
+        document.getElementById('referralModal').style.display = 'none';
+      }
+    });
+    
     db.ref('profileSections').once('value').then(snap => {
       if (!snap.exists()) {
         db.ref('profileSections').set({
@@ -2541,7 +2883,6 @@
       }
     });
     
-    // Initialize App
     if (getTelegramUserData()) {
       loadUserData();
     } else {
