@@ -9,9 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="9970324" data-sdk="show_9970324"></script>
   
@@ -60,71 +57,16 @@
       -moz-osx-font-smoothing: grayscale;
     }
     
-    /* Loading Screen */
-    #loading-screen {
+    /* Intro Video */
+    #intro-video {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      object-fit: cover;
       z-index: 9999;
-    }
-    
-    .loading-logo {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      margin-bottom: 30px;
-      animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 10px 30px rgba(79, 172, 254, 0.5));
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-    
-    .loading-text {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .loading-subtext {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 30px;
-    }
-    
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.2);
-      border-top-color: var(--accent-cyan);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .loading-progress {
-      margin-top: 20px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 600;
+      background: #000;
     }
     
     /* Main App Container */
@@ -656,29 +598,16 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
     
-    .user-info-box {
-      display: flex;
-      flex-direction: column;
+    .user-id-box {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 8px 16px;
       border: 1px solid var(--card-border);
       margin-bottom: 8px;
-    }
-    
-    .user-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .user-id-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
     
     .user-id-label {
@@ -919,11 +848,11 @@
     .ranking-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 12px;
-      padding: 12px;
+      padding: 16px;
       margin-bottom: 8px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow-sm);
@@ -940,53 +869,23 @@
       font-size: 18px;
       font-weight: 800;
       color: #fff;
-      flex-shrink: 0;
     }
     
     .ranking-position-num.top3 {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
     
-    .ranking-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid var(--accent-cyan);
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    
-    .ranking-user-info {
+    .ranking-user-id {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-    }
-    
-    .ranking-user-name {
       font-size: 14px;
       font-weight: 600;
       color: var(--text-primary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    
-    .ranking-user-id {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
     
     .ranking-balance {
       font-size: 16px;
       font-weight: 700;
       color: var(--accent-cyan);
-      flex-shrink: 0;
     }
     
     /* Notification */
@@ -1004,8 +903,6 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       z-index: 10000;
       animation: slideDown 0.3s ease;
-      max-width: 90%;
-      text-align: center;
     }
     
     @keyframes slideDown {
@@ -1046,21 +943,38 @@
       .stat-value {
         font-size: 18px;
       }
+      
+      .wallet-input-group {
+        gap: 8px;
+      }
+      
+      .input-field {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      
+      .btn-secondary {
+        padding: 10px 20px;
+        font-size: 13px;
+      }
+      
+      .redeem-form-group {
+        gap: 8px;
+      }
+      
+      .redeem-input {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
     }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div id="loading-screen">
-    <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
-         class="loading-logo" 
-         alt="Shark Bounty" />
-    <div class="loading-text">Shark Bounty</div>
-    <div class="loading-subtext">Initializing your account...</div>
-    <div class="loading-spinner"></div>
-    <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
-  </div>
+  <!-- Intro Video -->
+  <video id="intro-video" autoplay playsinline muted>
+    <source src="https://github.com/s42144/Shark-Bounty/raw/8b67f2028cd3d33d6545243ea43a57958c428edf/29f4182c-fb84-4f6e-830f-f560ae571afe.mp4" type="video/mp4" />
+  </video>
   
   <!-- Main App -->
   <div id="app">
@@ -1071,6 +985,10 @@
       <button class="nav-btn active" data-tab="home">
         <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/homebtn%20(1).png?raw=true" alt="Home" class="nav-icon" />
         <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-btn" data-tab="booster">
+        <img src="https://github.com/akhterefti-del/Shark/blob/823776a5bcbad3401fd886a8f932726c1bd88e9a/boostbt%20(1).png?raw=true" alt="Booster" class="nav-icon" />
+        <span class="nav-label">Booster</span>
       </button>
       <button class="nav-btn" data-tab="earn">
         <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/earnbtn%20(1).png?raw=true" alt="Earn" class="nav-icon" />
@@ -1088,11 +1006,6 @@
   </div>
   
   <script>
-    // Telegram WebApp Initialization
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
-    
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHofuS76xf2oGPaJqEtopmcxdoJzjkDL4",
@@ -1110,8 +1023,6 @@
     
     // Global State
     let userId = null;
-    let userName = null;
-    let userAvatar = null;
     let userData = null;
     let energyTimer = null;
     let incomeTimer = null;
@@ -1128,18 +1039,10 @@
     let adLoading = false;
     let profileSections = [];
     let rankingListener = null;
-    let referralCount = 0;
     
     // Utility Functions
     function now() {
       return Math.floor(Date.now() / 1000);
-    }
-    
-    function updateLoadingProgress(text) {
-      const progressEl = document.getElementById('loadingProgress');
-      if (progressEl) {
-        progressEl.textContent = text;
-      }
     }
     
     function notify(message, duration = 2500) {
@@ -1153,94 +1056,47 @@
       }, duration);
     }
     
-    function getTelegramUserData() {
-      updateLoadingProgress('Getting Telegram user data...');
+    function getOrSetUserId() {
+      let id = localStorage.getItem('shb_userid');
       
-      const user = tg.initDataUnsafe?.user;
+      // Check for referral parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const referralId = urlParams.get('ref') || urlParams.get('start');
       
-      if (user && user.id) {
-        userId = user.id.toString();
-        userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+      if (!id) {
+        id = Math.floor(10000 + Math.random() * 89999).toString();
+        localStorage.setItem('shb_userid', id);
         
-        if (user.photo_url) {
-          userAvatar = user.photo_url;
-        } else {
-          userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
+        // Process referral if exists
+        if (referralId && referralId.startsWith('r')) {
+          const referrerId = referralId.substring(1);
+          if (referrerId !== id) {
+            processReferral(referrerId);
+          }
         }
-        
-        console.log('Telegram User ID:', userId);
-        console.log('Telegram User Name:', userName);
-        return true;
       }
       
-      console.warn('Running outside Telegram environment - using test user');
-      userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
-      userName = 'Test User';
-      userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
-      return true;
+      userId = id;
     }
     
-    function processReferral() {
-      updateLoadingProgress('Processing referral...');
-      
-      const startParam = tg.initDataUnsafe?.start_param;
-      console.log('Start Param:', startParam);
-      
-      if (startParam) {
-        let referrerId = null;
-        
-        if (startParam.startsWith('r')) {
-          referrerId = startParam.substring(1);
-        } else {
-          referrerId = startParam;
-        }
-        
-        console.log('Referrer ID:', referrerId);
-        console.log('Current User ID:', userId);
-        
-        if (referrerId && referrerId !== userId) {
-          db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
-            if (!snap.exists()) {
-              console.log('Processing new referral...');
-              
-              db.ref('users/' + referrerId).once('value').then(refSnap => {
-                if (refSnap.exists()) {
-                  console.log('Referrer found in database');
-                  
-                  const referrerData = refSnap.val();
-                  const newBalance = (referrerData.balance || 0) + 5000;
-                  const newReferralCount = (referrerData.referrals || 0) + 1;
-                  
-                  // Update referrer's balance and referral count
-                  db.ref('users/' + referrerId).update({
-                    balance: newBalance,
-                    referrals: newReferralCount,
-                    lastUpdated: now()
-                  }).then(() => {
-                    console.log('Referrer balance updated to:', newBalance);
-                    console.log('Referrer referral count updated to:', newReferralCount);
-                  });
-                  
-                  // Store referrer in new user's data
-                  db.ref('users/' + userId).update({
-                    referredBy: referrerId,
-                    referredAt: now()
-                  }).then(() => {
-                    console.log('Referral link saved for user');
-                    notify('Welcome! Your referrer earned 5000 SHB!', 3000);
-                  });
-                } else {
-                  console.log('Referrer not found in database');
-                }
-              });
-            } else {
-              console.log('User was already referred by:', snap.val());
-            }
+    function processReferral(referrerId) {
+      db.ref('users/' + referrerId).once('value').then(snap => {
+        if (snap.exists()) {
+          const referrerData = snap.val();
+          const newReferralCount = (referrerData.referrals || 0) + 1;
+          const newBalance = (referrerData.balance || 0) + 500;
+          
+          db.ref('users/' + referrerId).update({
+            referrals: newReferralCount,
+            balance: newBalance
+          });
+          
+          // Store referrer in new user's data
+          db.ref('users/' + userId).update({
+            referredBy: referrerId
           });
         }
-      } else {
-        console.log('No referral parameter found');
-      }
+      });
     }
     
     function saveLastSeenData() {
@@ -1256,8 +1112,6 @@
     window.addEventListener('beforeunload', saveLastSeenData);
     window.addEventListener('unload', saveLastSeenData);
     
-    setInterval(saveLastSeenData, 30000);
-    
     function getOfflineTime(snap) {
       const lastSeen = snap.val() && snap.val().lastSeen;
       if (!lastSeen) return 0;
@@ -1267,14 +1121,11 @@
     
     // Load User Data
     function loadUserData() {
-      updateLoadingProgress('Loading your data...');
-      
       db.ref('users/' + userId).once('value').then(snap => {
         const offlineTime = getOfflineTime(snap);
         
         if (snap.exists()) {
           userData = snap.val();
-          console.log('Existing user data loaded');
         } else {
           userData = {
             balance: 0,
@@ -1285,44 +1136,32 @@
             multiTapCount: 0,
             maxEnergyUpCount: 0,
             ton: "",
-            avatar: userAvatar,
-            name: userName,
+            avatar: "https://github.com/akhterefti-del/Shark/blob/43434e64fd7f0a55152c5e982b6a95f2c0496c5b/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true",
             referrals: 0,
             eject: 0,
             completedTasks: {},
             adStats: { today: 0, daily: 0, monthly: 0, lifetime: 0 },
             lastSeen: now(),
             lastBalance: 0,
-            lastEnergy: 1200,
-            createdAt: now()
+            lastEnergy: 1200
           };
           db.ref('users/' + userId).set(userData);
-          console.log('New user created');
         }
         
-        if (userData.name !== userName || userData.avatar !== userAvatar) {
-          db.ref('users/' + userId).update({
-            name: userName,
-            avatar: userAvatar
-          });
-          userData.name = userName;
-          userData.avatar = userAvatar;
-        }
-        
+        // Handle offline energy recovery (0.5 per second)
         let energy = userData.energy || 1200;
         const maxEnergy = userData.maxEnergy || 1200;
         const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
         
+        // Handle offline income booster (1 SHB per 10 seconds)
         let balance = userData.balance || 0;
         const incomeBooster = userData.incomeBooster || false;
         if (incomeBooster) {
           const offlineIncome = Math.floor(offlineTime / 10);
           balance += offlineIncome;
-          if (offlineIncome > 0) {
-            notify(`Earned ${offlineIncome} SHB while offline!`);
-          }
         }
         
+        // Update state
         userData.energy = Math.round(offlineEnergy);
         userData.balance = balance;
         coinsEarned = balance;
@@ -1333,8 +1172,8 @@
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
         adStats = userData.adStats || { today: 0, daily: 0, monthly: 0, lifetime: 0 };
-        referralCount = userData.referrals || 0;
         
+        // Save updated values
         db.ref('users/' + userId).update({
           energy: userData.energy,
           balance: balance,
@@ -1342,15 +1181,6 @@
           lastBalance: balance,
           lastEnergy: userData.energy
         });
-        
-        processReferral();
-        
-        updateLoadingProgress('Starting app...');
-        
-        setTimeout(() => {
-          document.getElementById('loading-screen').style.display = 'none';
-          document.getElementById('app').style.display = 'block';
-        }, 1000);
         
         showTab('home');
         setupIncomeBooster();
@@ -1369,7 +1199,6 @@
       if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
       if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
       if (newData.adStats !== undefined) adStats = newData.adStats;
-      if (newData.referrals !== undefined) referralCount = newData.referrals;
     }
     
     // Navigation
@@ -1379,6 +1208,7 @@
       });
       
       if (tab === 'home') renderHome();
+      if (tab === 'booster') renderBooster();
       if (tab === 'earn') renderEarn();
       if (tab === 'profile') renderProfile();
       if (tab === 'ranking') renderRanking();
@@ -1461,11 +1291,13 @@
         document.getElementById('homeBalance').textContent = coinsEarned;
       }
       
+      // Desktop click
       coin.addEventListener('click', (e) => {
         e.preventDefault();
         handleTap(booster.multiTap);
       });
       
+      // Mobile touch with multi-finger support
       coin.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = e.touches.length;
@@ -1522,12 +1354,155 @@
       }
     }
     
+    // Booster Section
+    function renderBooster() {
+      const maxEnergyDisabled = (booster.maxEnergyUpCount || 0) >= 10;
+      const multiTapDisabled = (booster.multiTapCount || 0) >= 3;
+      const incomeDisabled = booster.incomeBooster;
+      
+      const html = `
+        <div class="booster-main">
+          <div class="section-header">
+            <div class="section-title">Boosters</div>
+            <div class="section-subtitle">Upgrade your earning power</div>
+          </div>
+          
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
+            <div class="booster-header">
+              <div class="booster-icon">⚡</div>
+              <div class="booster-info">
+                <div class="booster-title">Max Energy</div>
+                <div class="booster-price">10,000 SHB</div>
+              </div>
+            </div>
+            <div class="booster-desc">
+              Increase your maximum energy capacity by 500 points. More energy means more tapping power!
+            </div>
+            <div class="booster-progress">
+              Remaining: ${10 - (booster.maxEnergyUpCount || 0)} / 10
+            </div>
+            <button class="btn-primary" id="buyEnergy" ${coinsEarned < 10000 || maxEnergyDisabled ? 'disabled' : ''}>
+              ${maxEnergyDisabled ? 'Max Level' : 'Upgrade'}
+            </button>
+          </div>
+          
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
+            <div class="booster-header">
+              <div class="booster-icon">👆</div>
+              <div class="booster-info">
+                <div class="booster-title">Multi-Tap</div>
+                <div class="booster-price">15,000 SHB</div>
+              </div>
+            </div>
+            <div class="booster-desc">
+              Unlock multi-finger tapping! Each upgrade adds one more finger (up to 4 total).
+            </div>
+            <div class="booster-progress">
+              Current: ${booster.multiTap} fingers | Remaining: ${3 - (booster.multiTapCount || 0)} / 3
+            </div>
+            <button class="btn-primary" id="buyMultiTap" ${coinsEarned < 15000 || multiTapDisabled ? 'disabled' : ''}>
+              ${multiTapDisabled ? 'Max Level' : 'Upgrade'}
+            </button>
+          </div>
+          
+          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
+            <div class="booster-header">
+              <div class="booster-icon">💰</div>
+              <div class="booster-info">
+                <div class="booster-title">Passive Income</div>
+                <div class="booster-price">100,000 SHB</div>
+              </div>
+            </div>
+            <div class="booster-desc">
+              Earn 1 SHB every 10 seconds automatically, even when offline! One-time purchase.
+            </div>
+            <div class="booster-progress">
+              ${incomeDisabled ? 'Active' : 'Not Purchased'}
+            </div>
+            <button class="btn-primary" id="buyIncome" ${coinsEarned < 100000 || incomeDisabled ? 'disabled' : ''}>
+              ${incomeDisabled ? 'Activated' : 'Purchase'}
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('main-content').innerHTML = html;
+      
+      // Energy Booster
+      document.getElementById('buyEnergy').addEventListener('click', () => {
+        if (coinsEarned < 10000 || maxEnergyDisabled) {
+          notify('Cannot purchase this upgrade!');
+          return;
+        }
+        
+        coinsEarned -= 10000;
+        booster.maxEnergy += 500;
+        booster.energy = booster.maxEnergy;
+        booster.maxEnergyUpCount = (booster.maxEnergyUpCount || 0) + 1;
+        
+        updateUserData({
+          balance: coinsEarned,
+          maxEnergy: booster.maxEnergy,
+          energy: booster.maxEnergy,
+          maxEnergyUpCount: booster.maxEnergyUpCount
+        });
+        
+        notify('Max energy increased by 500!');
+        renderBooster();
+      });
+      
+      // Multi-Tap Booster
+      document.getElementById('buyMultiTap').addEventListener('click', () => {
+        if (coinsEarned < 15000 || multiTapDisabled) {
+          notify('Cannot purchase this upgrade!');
+          return;
+        }
+        
+        coinsEarned -= 15000;
+        const nextTap = booster.multiTap === 1 ? 2 : (booster.multiTap === 2 ? 3 : 4);
+        booster.multiTap = nextTap;
+        booster.multiTapCount = (booster.multiTapCount || 0) + 1;
+        
+        updateUserData({
+          balance: coinsEarned,
+          multiTap: nextTap,
+          multiTapCount: booster.multiTapCount
+        });
+        
+        notify(`Multi-tap upgraded to ${nextTap} fingers!`);
+        renderBooster();
+        updateStatsDisplay();
+      });
+      
+      // Income Booster
+      document.getElementById('buyIncome').addEventListener('click', () => {
+        if (coinsEarned < 100000 || incomeDisabled) {
+          notify('Cannot purchase this upgrade!');
+          return;
+        }
+        
+        coinsEarned -= 100000;
+        booster.incomeBooster = true;
+        
+        updateUserData({
+          balance: coinsEarned,
+          incomeBooster: true
+        });
+        
+        notify('Passive income activated!');
+        setupIncomeBooster();
+        renderBooster();
+        updateStatsDisplay();
+      });
+    }
+    
     // Earn Section
     function renderEarn() {
       const html = `
         <div class="earn-main">
           <div class="section-header">
             <div class="section-title">Earn More</div>
+            <div class="section-subtitle">Complete tasks and watch ads</div>
           </div>
           
           <div class="chart-card">
@@ -1568,6 +1543,7 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // Setup ad button
       document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
         
@@ -1604,8 +1580,10 @@
         }
       });
       
+      // Load tasks
       loadTasks();
       
+      // Setup chart
       setTimeout(() => {
         const ctx = document.getElementById('adChart').getContext('2d');
         new Chart(ctx, {
@@ -1693,6 +1671,7 @@
         
         document.getElementById('tasksList').innerHTML = html;
         
+        // Setup task buttons
         document.querySelectorAll('.task-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const taskId = this.dataset.taskId;
@@ -1724,6 +1703,7 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
+        // Count actual referrals
         db.ref('users')
           .orderByChild('referredBy')
           .equalTo(userId)
@@ -1731,9 +1711,8 @@
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
             
-            // Update the referral count in database if different
-            if (actualReferralCount !== referralCount) {
-              referralCount = actualReferralCount;
+            // Update referral count if different
+            if (actualReferralCount !== (userData.referrals || 0)) {
               updateUserData({ referrals: actualReferralCount });
             }
             
@@ -1754,16 +1733,13 @@
                     <div class="avatar-glow"></div>
                     <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
                   </div>
-                  <div class="user-info-box">
-                    <div class="user-name">${userData.name}</div>
-                    <div class="user-id-row">
-                      <span class="user-id-label">ID:</span>
-                      <span class="user-id-value">${userId}</span>
-                      <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                           class="copy-icon" 
-                           id="copyUserId" 
-                           alt="Copy" />
-                    </div>
+                  <div class="user-id-box">
+                    <span class="user-id-label">ID:</span>
+                    <span class="user-id-value">${userId}</span>
+                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                         class="copy-icon" 
+                         id="copyUserId" 
+                         alt="Copy" />
                   </div>
                 </div>
                 
@@ -1795,7 +1771,7 @@
                     </div>
                     <div class="referral-stat">
                       <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
+                      <div class="referral-stat-value">${actualReferralCount * 500}</div>
                     </div>
                   </div>
                 </div>
@@ -1818,12 +1794,14 @@
             
             document.getElementById('main-content').innerHTML = html;
             
+            // Copy User ID
             document.getElementById('copyUserId').addEventListener('click', () => {
               navigator.clipboard.writeText(userId).then(() => {
                 notify('User ID copied to clipboard!');
               });
             });
             
+            // Save TON Wallet - Send to admin panel
             document.getElementById('saveTonWallet').addEventListener('click', () => {
               const wallet = document.getElementById('tonWallet').value.trim();
               if (wallet.length < 10) {
@@ -1831,19 +1809,21 @@
                 return;
               }
               
+              // Save to user data
               updateUserData({ ton: wallet });
               
+              // Send to admin panel
               db.ref('admin/tonSubmissions').push({
                 userId: userId,
-                userName: userName,
                 walletAddress: wallet,
                 timestamp: now(),
                 balance: coinsEarned
               });
               
-              notify('TON wallet saved successfully!');
+              notify('TON wallet saved successfully and sent to admin!');
             });
             
+            // Copy Referral Link
             document.getElementById('copyReferralLink').addEventListener('click', () => {
               const link = document.getElementById('referralLink').textContent;
               navigator.clipboard.writeText(link).then(() => {
@@ -1851,6 +1831,7 @@
               });
             });
             
+            // Redeem Code
             document.getElementById('redeemBtn').addEventListener('click', () => {
               const code = document.getElementById('redeemCode').value.trim();
               if (code.length !== 4) {
@@ -1899,6 +1880,7 @@
         <div class="ranking-main">
           <div class="section-header">
             <div class="section-title">Leaderboard</div>
+            <div class="section-subtitle">Top 200 players</div>
           </div>
           
           <div class="ranking-position">
@@ -1912,6 +1894,7 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // Setup live ranking listener
       if (rankingListener) rankingListener.off();
       
       const usersRef = db.ref('users');
@@ -1920,12 +1903,9 @@
         const users = [];
         
         snap.forEach(child => {
-          const userData = child.val();
           users.push({
             id: child.key,
-            name: userData.name || 'Unknown',
-            avatar: userData.avatar || 'https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true',
-            balance: userData.balance || 0
+            balance: child.val().balance || 0
           });
         });
         
@@ -1942,12 +1922,8 @@
           html += `
             <div class="ranking-row">
               <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
-              <img src="${user.avatar}" class="ranking-avatar" alt="${user.name}" />
-              <div class="ranking-user-info">
-                <div class="ranking-user-name">${user.name}</div>
-                <div class="ranking-user-id">ID: ${user.id}</div>
-              </div>
-              <div class="ranking-balance">${user.balance} SHB</div>
+              <div class="ranking-user-id">ID: ${user.id}</div>
+              <div class="ranking-balance">${user.balance}</div>
             </div>
           `;
         });
@@ -1967,6 +1943,33 @@
       });
     });
     
+    // Video Intro Handler
+    const introVideo = document.getElementById('intro-video');
+    
+    introVideo.addEventListener('ended', () => {
+      introVideo.style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      getOrSetUserId();
+      loadUserData();
+    });
+    
+    introVideo.addEventListener('error', () => {
+      introVideo.style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      getOrSetUserId();
+      loadUserData();
+    });
+    
+    // Fallback if video doesn't play
+    setTimeout(() => {
+      if (introVideo.style.display !== 'none') {
+        introVideo.style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        getOrSetUserId();
+        loadUserData();
+      }
+    }, 5000);
+    
     // Initialize default profile sections if not exist
     db.ref('profileSections').once('value').then(snap => {
       if (!snap.exists()) {
@@ -1984,13 +1987,6 @@
         });
       }
     });
-    
-    // Initialize App
-    if (getTelegramUserData()) {
-      loadUserData();
-    } else {
-      notify('Failed to initialize Telegram user data');
-    }
   </script>
 </body>
 </html>
