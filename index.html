@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,7 +44,6 @@
       --accent-purple: #764ba2;
       --accent-pink: #f5576c;
       --accent-cyan: #00f2fe;
-      --accent-gold: #ffd700;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -562,81 +562,94 @@
       margin-bottom: 16px;
     }
     
-    /* Milestone Rewards */
+    /* Milestone Cards */
     .milestone-card {
-      background: var(--card-bg);
+      background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
       backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 16px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
-    }
-    
-    .milestone-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .milestone-icon {
-      font-size: 24px;
-    }
-    
-    .milestone-item {
-      background: rgba(255, 255, 255, 0.05);
       border-radius: 16px;
-      padding: 16px;
+      padding: 20px;
       margin-bottom: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .milestone-card.claimed {
+      opacity: 0.6;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .milestone-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.3s ease;
+      margin-bottom: 12px;
     }
     
-    .milestone-item.completed {
-      border-color: var(--accent-cyan);
-      background: rgba(79, 172, 254, 0.1);
+    .milestone-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
     }
     
-    .milestone-item.claimed {
-      border-color: var(--accent-gold);
-      background: rgba(255, 215, 0, 0.1);
-      opacity: 0.6;
+    .milestone-reward {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .milestone-info {
-      flex: 1;
+      margin-bottom: 12px;
     }
     
-    .milestone-target {
+    .milestone-title {
       font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 4px;
     }
     
-    .milestone-reward {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--accent-cyan);
+    .milestone-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
     }
     
     .milestone-progress {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 4px;
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
     }
     
-    .milestone-btn {
-      padding: 10px 20px;
+    .milestone-progress-bar {
+      height: 100%;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    .milestone-progress-text {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    .btn-milestone {
+      width: 100%;
+      padding: 12px;
       background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       border: none;
       border-radius: 10px;
@@ -649,15 +662,10 @@
       letter-spacing: 0.5px;
     }
     
-    .milestone-btn:disabled {
+    .btn-milestone:disabled {
       background: rgba(255, 255, 255, 0.1);
       color: rgba(255, 255, 255, 0.4);
       cursor: not-allowed;
-    }
-    
-    .milestone-btn.claimed {
-      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-      color: #1e3c72;
     }
     
     /* Task Card */
@@ -1147,7 +1155,6 @@
       }
     }
   </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
   <!-- Loading Screen -->
@@ -1222,16 +1229,9 @@
       today: 0, 
       yesterday: 0, 
       thisWeek: 0, 
-      thisMonth: 0, 
+      thisMonth: 0,
       lifetime: 0,
-      lastAdDate: null,
-      lastWeekReset: null,
-      lastMonthReset: null
-    };
-    let milestones = {
-      milestone100: { claimed: false },
-      milestone200: { claimed: false },
-      milestone500: { claimed: false }
+      lastAdDate: null
     };
     let booster = {
       energy: 1200,
@@ -1246,6 +1246,11 @@
     let profileSections = [];
     let rankingListener = null;
     let referralCount = 0;
+    let milestones = {
+      m100: false,
+      m200: false,
+      m500: false
+    };
     
     // Utility Functions
     function now() {
@@ -1253,27 +1258,27 @@
     }
     
     function getToday() {
-      const date = new Date();
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     }
     
     function getYesterday() {
-      const date = new Date();
-      date.setDate(date.getDate() - 1);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     }
     
     function getWeekStart() {
-      const date = new Date();
-      const day = date.getDay();
-      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-      date.setDate(diff);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const d = new Date();
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      d.setDate(diff);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     }
     
     function getMonthStart() {
-      const date = new Date();
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth() + 1}-1`;
     }
     
     function updateLoadingProgress(text) {
@@ -1350,13 +1355,16 @@
                   
                   const referrerData = refSnap.val();
                   const newBalance = (referrerData.balance || 0) + 5000;
+                  const newReferralCount = (referrerData.referrals || 0) + 1;
                   
-                  // Update referrer's balance
+                  // Update referrer's balance and referral count
                   db.ref('users/' + referrerId).update({
                     balance: newBalance,
+                    referrals: newReferralCount,
                     lastUpdated: now()
                   }).then(() => {
                     console.log('Referrer balance updated to:', newBalance);
+                    console.log('Referrer referral count updated to:', newReferralCount);
                   });
                   
                   // Store referrer in new user's data
@@ -1365,18 +1373,6 @@
                     referredAt: now()
                   }).then(() => {
                     console.log('Referral link saved for user');
-                    
-                    // Send notification to admin
-                    db.ref('admin/notifications').push({
-                      type: 'new_referral',
-                      referrerId: referrerId,
-                      referrerName: referrerData.name || 'Unknown',
-                      newUserId: userId,
-                      newUserName: userName,
-                      timestamp: now(),
-                      reward: 5000
-                    });
-                    
                     notify('Welcome! Your referrer earned 5000 SHB!', 3000);
                   });
                 } else {
@@ -1415,26 +1411,27 @@
       return timeDiff > 0 ? timeDiff : 0;
     }
     
-    function resetAdStatsIfNeeded() {
+    function updateAdStats() {
       const today = getToday();
+      const yesterday = getYesterday();
       const weekStart = getWeekStart();
       const monthStart = getMonthStart();
       
       if (adStats.lastAdDate !== today) {
-        adStats.yesterday = adStats.today;
+        if (adStats.lastAdDate === yesterday) {
+          adStats.yesterday = adStats.today;
+        }
         adStats.today = 0;
-        adStats.lastAdDate = today;
       }
       
-      if (adStats.lastWeekReset !== weekStart) {
-        adStats.thisWeek = 0;
-        adStats.lastWeekReset = weekStart;
-      }
+      adStats.today++;
+      adStats.lifetime++;
+      adStats.lastAdDate = today;
       
-      if (adStats.lastMonthReset !== monthStart) {
-        adStats.thisMonth = 0;
-        adStats.lastMonthReset = monthStart;
-      }
+      // Calculate this week and this month
+      // This is simplified - in production you'd track each day
+      adStats.thisWeek = adStats.today + (adStats.yesterday || 0);
+      adStats.thisMonth = adStats.thisWeek;
     }
     
     // Load User Data
@@ -1466,16 +1463,14 @@
               today: 0, 
               yesterday: 0, 
               thisWeek: 0, 
-              thisMonth: 0, 
+              thisMonth: 0,
               lifetime: 0,
-              lastAdDate: getToday(),
-              lastWeekReset: getWeekStart(),
-              lastMonthReset: getMonthStart()
+              lastAdDate: null
             },
             milestones: {
-              milestone100: { claimed: false },
-              milestone200: { claimed: false },
-              milestone500: { claimed: false }
+              m100: false,
+              m200: false,
+              m500: false
             },
             lastSeen: now(),
             lastBalance: 0,
@@ -1518,42 +1513,27 @@
         booster.incomeBooster = incomeBooster;
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
-        
-        if (userData.adStats) {
-          adStats = {
-            today: userData.adStats.today || 0,
-            yesterday: userData.adStats.yesterday || 0,
-            thisWeek: userData.adStats.thisWeek || 0,
-            thisMonth: userData.adStats.thisMonth || 0,
-            lifetime: userData.adStats.lifetime || 0,
-            lastAdDate: userData.adStats.lastAdDate || getToday(),
-            lastWeekReset: userData.adStats.lastWeekReset || getWeekStart(),
-            lastMonthReset: userData.adStats.lastMonthReset || getMonthStart()
-          };
-        }
-        
-        if (userData.milestones) {
-          milestones = userData.milestones;
-        }
-        
-        resetAdStatsIfNeeded();
-        
-        db.ref('users')
-          .orderByChild('referredBy')
-          .equalTo(userId)
-          .once('value')
-          .then(refSnap => {
-            referralCount = refSnap.numChildren();
-            console.log('Actual referral count:', referralCount);
-          });
+        adStats = userData.adStats || { 
+          today: 0, 
+          yesterday: 0, 
+          thisWeek: 0, 
+          thisMonth: 0,
+          lifetime: 0,
+          lastAdDate: null
+        };
+        milestones = userData.milestones || {
+          m100: false,
+          m200: false,
+          m500: false
+        };
+        referralCount = userData.referrals || 0;
         
         db.ref('users/' + userId).update({
           energy: userData.energy,
           balance: balance,
           lastSeen: now(),
           lastBalance: balance,
-          lastEnergy: userData.energy,
-          adStats: adStats
+          lastEnergy: userData.energy
         });
         
         processReferral();
@@ -1752,7 +1732,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">⚡</div>
+              <div class="booster-icon">\u26a1</div>
               <div class="booster-info">
                 <div class="booster-title">Max Energy</div>
                 <div class="booster-price">10,000 SHB</div>
@@ -1771,7 +1751,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">👆</div>
+              <div class="booster-icon">\ud83d\udc46</div>
               <div class="booster-info">
                 <div class="booster-title">Multi-Tap</div>
                 <div class="booster-price">15,000 SHB</div>
@@ -1790,7 +1770,7 @@
           
           <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
             <div class="booster-header">
-              <div class="booster-icon">💲</div>
+              <div class="booster-icon">\ud83d\udcb2</div>
               <div class="booster-info">
                 <div class="booster-title">Passive Income</div>
                 <div class="booster-price">100,000 SHB</div>
@@ -1878,16 +1858,16 @@
     
     // Earn Section
     function renderEarn() {
-      resetAdStatsIfNeeded();
-      
-      const milestone100Status = adStats.lifetime >= 100;
-      const milestone200Status = adStats.lifetime >= 200;
-      const milestone500Status = adStats.lifetime >= 500;
+      const lifetimeAds = adStats.lifetime || 0;
+      const progress100 = Math.min((lifetimeAds / 100) * 100, 100);
+      const progress200 = Math.min((lifetimeAds / 200) * 100, 100);
+      const progress500 = Math.min((lifetimeAds / 500) * 100, 100);
       
       const html = `
         <div class="earn-main">
           <div class="section-header">
             <div class="section-title">Earn More</div>
+            <div class="section-subtitle">Complete tasks and watch ads</div>
           </div>
           
           <div class="chart-card">
@@ -1922,50 +1902,63 @@
             </button>
           </div>
           
-          <div class="milestone-card">
-            <div class="milestone-title">
-              <span class="milestone-icon">🏆</span>
-              <span>Milestone Rewards</span>
+          <div class="section-header" style="padding-top: 10px;">
+            <div class="section-title" style="font-size: 22px;">Ad Milestones</div>
+            <div class="section-subtitle">Watch ads to unlock bonus rewards</div>
+          </div>
+          
+          <div class="milestone-card ${milestones.m100 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">\ud83c\udfaf</div>
+              <div class="milestone-reward">+5,000 SHB</div>
             </div>
-            
-            <div class="milestone-item ${milestone100Status ? 'completed' : ''} ${milestones.milestone100.claimed ? 'claimed' : ''}">
-              <div class="milestone-info">
-                <div class="milestone-target">100 Ads Milestone</div>
-                <div class="milestone-reward">Reward: 5,000 SHB</div>
-                <div class="milestone-progress">${adStats.lifetime}/100 ads watched</div>
-              </div>
-              <button class="milestone-btn ${milestones.milestone100.claimed ? 'claimed' : ''}" 
-                      id="claim100" 
-                      ${!milestone100Status || milestones.milestone100.claimed ? 'disabled' : ''}>
-                ${milestones.milestone100.claimed ? '✓ Claimed' : (milestone100Status ? 'Claim' : 'Locked')}
-              </button>
+            <div class="milestone-info">
+              <div class="milestone-title">Bronze Milestone</div>
+              <div class="milestone-desc">Watch 100 ads to claim this reward</div>
             </div>
-            
-            <div class="milestone-item ${milestone200Status ? 'completed' : ''} ${milestones.milestone200.claimed ? 'claimed' : ''}">
-              <div class="milestone-info">
-                <div class="milestone-target">200 Ads Milestone</div>
-                <div class="milestone-reward">Reward: 10,000 SHB</div>
-                <div class="milestone-progress">${adStats.lifetime}/200 ads watched</div>
-              </div>
-              <button class="milestone-btn ${milestones.milestone200.claimed ? 'claimed' : ''}" 
-                      id="claim200" 
-                      ${!milestone200Status || milestones.milestone200.claimed ? 'disabled' : ''}>
-                ${milestones.milestone200.claimed ? '✓ Claimed' : (milestone200Status ? 'Claim' : 'Locked')}
-              </button>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress100}%"></div>
             </div>
-            
-            <div class="milestone-item ${milestone500Status ? 'completed' : ''} ${milestones.milestone500.claimed ? 'claimed' : ''}">
-              <div class="milestone-info">
-                <div class="milestone-target">500 Ads Milestone</div>
-                <div class="milestone-reward">Reward: 20,000 SHB</div>
-                <div class="milestone-progress">${adStats.lifetime}/500 ads watched</div>
-              </div>
-              <button class="milestone-btn ${milestones.milestone500.claimed ? 'claimed' : ''}" 
-                      id="claim500" 
-                      ${!milestone500Status || milestones.milestone500.claimed ? 'disabled' : ''}>
-                ${milestones.milestone500.claimed ? '✓ Claimed' : (milestone500Status ? 'Claim' : 'Locked')}
-              </button>
+            <div class="milestone-progress-text">${lifetimeAds} / 100 ads watched</div>
+            <button class="btn-milestone" id="claim100" ${lifetimeAds < 100 || milestones.m100 ? 'disabled' : ''}>
+              ${milestones.m100 ? 'Claimed' : lifetimeAds >= 100 ? 'Claim Reward' : 'Locked'}
+            </button>
+          </div>
+          
+          <div class="milestone-card ${milestones.m200 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">\ud83c\udfc6</div>
+              <div class="milestone-reward">+10,000 SHB</div>
             </div>
+            <div class="milestone-info">
+              <div class="milestone-title">Silver Milestone</div>
+              <div class="milestone-desc">Watch 200 ads to claim this reward</div>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress200}%"></div>
+            </div>
+            <div class="milestone-progress-text">${lifetimeAds} / 200 ads watched</div>
+            <button class="btn-milestone" id="claim200" ${lifetimeAds < 200 || milestones.m200 ? 'disabled' : ''}>
+              ${milestones.m200 ? 'Claimed' : lifetimeAds >= 200 ? 'Claim Reward' : 'Locked'}
+            </button>
+          </div>
+          
+          <div class="milestone-card ${milestones.m500 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">\ud83d\udc51</div>
+              <div class="milestone-reward">+20,000 SHB</div>
+            </div>
+            <div class="milestone-info">
+              <div class="milestone-title">Gold Milestone</div>
+              <div class="milestone-desc">Watch 500 ads to claim this reward</div>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress500}%"></div>
+            </div>
+            <div class="milestone-progress-text">${lifetimeAds} / 500 ads watched</div>
+            <button class="btn-milestone" id="claim500" ${lifetimeAds < 500 || milestones.m500 ? 'disabled' : ''}>
+              ${milestones.m500 ? 'Claimed' : lifetimeAds >= 500 ? 'Claim Reward' : 'Locked'}
+            </button>
           </div>
           
           <div id="tasksList"></div>
@@ -1986,11 +1979,7 @@
             document.getElementById('showAdBtn').textContent = 'Watch Ad';
             
             coinsEarned += 500;
-            adStats.today++;
-            adStats.thisWeek++;
-            adStats.thisMonth++;
-            adStats.lifetime++;
-            adStats.lastAdDate = getToday();
+            updateAdStats();
             
             updateUserData({
               balance: coinsEarned,
@@ -2011,50 +2000,51 @@
         }
       });
       
-      document.getElementById('claim100').addEventListener('click', () => {
-        if (adStats.lifetime >= 100 && !milestones.milestone100.claimed) {
-          coinsEarned += 5000;
-          milestones.milestone100.claimed = true;
-          
-          updateUserData({
-            balance: coinsEarned,
-            milestones: milestones
-          });
-          
-          notify('Claimed 5,000 SHB milestone reward!');
-          renderEarn();
-        }
-      });
+      // Milestone claim buttons
+      if (document.getElementById('claim100')) {
+        document.getElementById('claim100').addEventListener('click', () => {
+          if (lifetimeAds >= 100 && !milestones.m100) {
+            coinsEarned += 5000;
+            milestones.m100 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 5,000 SHB! \ud83c\udf89');
+            renderEarn();
+          }
+        });
+      }
       
-      document.getElementById('claim200').addEventListener('click', () => {
-        if (adStats.lifetime >= 200 && !milestones.milestone200.claimed) {
-          coinsEarned += 10000;
-          milestones.milestone200.claimed = true;
-          
-          updateUserData({
-            balance: coinsEarned,
-            milestones: milestones
-          });
-          
-          notify('Claimed 10,000 SHB milestone reward!');
-          renderEarn();
-        }
-      });
+      if (document.getElementById('claim200')) {
+        document.getElementById('claim200').addEventListener('click', () => {
+          if (lifetimeAds >= 200 && !milestones.m200) {
+            coinsEarned += 10000;
+            milestones.m200 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 10,000 SHB! \ud83c\udfc6');
+            renderEarn();
+          }
+        });
+      }
       
-      document.getElementById('claim500').addEventListener('click', () => {
-        if (adStats.lifetime >= 500 && !milestones.milestone500.claimed) {
-          coinsEarned += 20000;
-          milestones.milestone500.claimed = true;
-          
-          updateUserData({
-            balance: coinsEarned,
-            milestones: milestones
-          });
-          
-          notify('Claimed 20,000 SHB milestone reward!');
-          renderEarn();
-        }
-      });
+      if (document.getElementById('claim500')) {
+        document.getElementById('claim500').addEventListener('click', () => {
+          if (lifetimeAds >= 500 && !milestones.m500) {
+            coinsEarned += 20000;
+            milestones.m500 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 20,000 SHB! \ud83d\udc51');
+            renderEarn();
+          }
+        });
+      }
       
       loadTasks();
       
@@ -2182,9 +2172,9 @@
           .once('value')
           .then(refSnap => {
             const actualReferralCount = refSnap.numChildren();
-            referralCount = actualReferralCount;
             
-            if (actualReferralCount !== (userData.referrals || 0)) {
+            if (actualReferralCount !== referralCount) {
+              referralCount = actualReferralCount;
               updateUserData({ referrals: actualReferralCount });
             }
             
@@ -2350,6 +2340,7 @@
         <div class="ranking-main">
           <div class="section-header">
             <div class="section-title">Leaderboard</div>
+            <div class="section-subtitle">Top 200 players</div>
           </div>
           
           <div class="ranking-position">
