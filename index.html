@@ -1236,6 +1236,13 @@
       color: var(--accent-cyan);
     }
     
+    .referral-list-commission {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-top: 4px;
+    }
+    
     .referral-list-empty {
       text-align: center;
       padding: 40px 20px;
@@ -1506,6 +1513,7 @@
     let energyTimer = null;
     let incomeTimer = null;
     let balanceListener = null;
+    let referralBalanceListeners = {}; // Track balance listeners for each referral
     let adStats = { 
       today: 0, 
       yesterday: 0, 
@@ -1673,9 +1681,13 @@
                       
                       db.ref('users/' + userId).update({
                         referredBy: referrerId,
-                        referredAt: now()
+                        referredAt: now(),
+                        referralCommissions: {} // Initialize commission tracking
                       }).then(() => {
                         console.log('Referral link saved for user');
+                        
+                        // Setup real-time commission tracking
+                        setupReferralCommissionTracking(userId, referrerId);
                         
                         db.ref('admin/notifications').push({
                           type: 'new_referral',
@@ -1709,6 +1721,74 @@
           resolve();
         }
       });
+    }
+    
+    // NEW FUNCTION: Setup real-time commission tracking for a referral
+    function setupReferralCommissionTracking(referralUserId, referrerId) {
+      console.log(`Setting up commission tracking: ${referralUserId} -> ${referrerId}`);
+      
+      // Listen to balance changes of the referred user
+      const balanceRef = db.ref('users/' + referralUserId + '/balance');
+      let previousBalance = 0;
+      
+      // Get initial balance
+      balanceRef.once('value').then(snap => {
+        previousBalance = snap.val() || 0;
+        console.log(`Initial balance for ${referralUserId}: ${previousBalance}`);
+      });
+      
+      // Listen for balance changes
+      balanceRef.on('value', (snapshot) => {
+        const currentBalance = snapshot.val() || 0;
+        
+        if (currentBalance > previousBalance) {
+          const earned = currentBalance - previousBalance;
+          const commission = Math.floor(earned * 0.2); // 20% commission
+          
+          console.log(`Referral ${referralUserId} earned ${earned} SHB, commission: ${commission} SHB`);
+          
+          if (commission > 0) {
+            // Update referrer's balance
+            db.ref('users/' + referrerId + '/balance').transaction((currentReferrerBalance) => {
+              return (currentReferrerBalance || 0) + commission;
+            }).then(() => {
+              console.log(`Added ${commission} SHB commission to referrer ${referrerId}`);
+              
+              // Track commission in referrer's data
+              db.ref('users/' + referrerId + '/referralCommissions/' + referralUserId).transaction((currentCommission) => {
+                return (currentCommission || 0) + commission;
+              });
+              
+              // Track commission in referred user's data
+              db.ref('users/' + referralUserId + '/commissionPaidToReferrer').transaction((currentPaid) => {
+                return (currentPaid || 0) + commission;
+              });
+            });
+          }
+        }
+        
+        previousBalance = currentBalance;
+      });
+      
+      // Store listener reference for cleanup
+      referralBalanceListeners[referralUserId] = balanceRef;
+    }
+    
+    // NEW FUNCTION: Setup commission tracking for all existing referrals
+    function setupAllReferralCommissionTracking() {
+      console.log('Setting up commission tracking for all referrals...');
+      
+      db.ref('users')
+        .orderByChild('referredBy')
+        .equalTo(userId)
+        .once('value')
+        .then(snapshot => {
+          snapshot.forEach(child => {
+            const referralUserId = child.key;
+            setupReferralCommissionTracking(referralUserId, userId);
+          });
+          console.log(`Commission tracking setup complete for ${snapshot.numChildren()} referrals`);
+        });
     }
     
     function saveLastSeenData() {
@@ -1768,6 +1848,14 @@
         const count = snapshot.numChildren();
         referralCount = count;
         
+        // Calculate total commission earnings
+        let totalCommission = 0;
+        if (userData && userData.referralCommissions) {
+          Object.values(userData.referralCommissions).forEach(commission => {
+            totalCommission += commission || 0;
+          });
+        }
+        
         const referralValueEl = document.querySelector('.referral-stat-value');
         const referralEarningsEl = document.querySelectorAll('.referral-stat-value')[1];
         
@@ -1775,10 +1863,13 @@
           referralValueEl.textContent = count;
         }
         if (referralEarningsEl) {
-          referralEarningsEl.textContent = count * 5000;
+          // Show signup bonus + commission earnings
+          const signupBonus = count * 5000;
+          referralEarningsEl.textContent = signupBonus + totalCommission;
         }
         
         console.log('Real-time referral count updated:', count);
+        console.log('Total commission earned:', totalCommission);
       });
     }
     
@@ -1822,6 +1913,12 @@
         if (snap.exists()) {
           userData = snap.val();
           console.log('Existing user data loaded');
+          
+          // Initialize referralCommissions if it doesn't exist
+          if (!userData.referralCommissions) {
+            userData.referralCommissions = {};
+            db.ref('users/' + userId + '/referralCommissions').set({});
+          }
         } else {
           userData = {
             balance: 0,
@@ -1837,6 +1934,7 @@
             referrals: 0,
             eject: 0,
             completedTasks: {},
+            referralCommissions: {}, // Track commission from each referral
             adStats: { 
               today: 0, 
               yesterday: 0, 
@@ -1919,6 +2017,9 @@
         
         setupReferralListener();
         setupBalanceListener();
+        
+        // Setup commission tracking for all existing referrals
+        setupAllReferralCommissionTracking();
         
         db.ref('users/' + userId).update({
           energy: userData.energy,
@@ -2578,7 +2679,7 @@
             // Notify user about the 10-second wait
             notify('Complete the task. Reward will be added in 10 seconds...', 3000);
             
-            // Set timeout for 10 seconds (changed from 20)
+            // Set timeout for 10 seconds
             setTimeout(() => {
               // Double-check that task hasn't been completed yet (in case of race condition)
               if (userData.completedTasks && userData.completedTasks[taskId]) {
@@ -2607,7 +2708,7 @@
               
               // Re-render the earn section to update UI
               renderEarn();
-            }, 10000); // Changed from 20000 to 10000 (10 seconds)
+            }, 10000);
           });
         });
       });
@@ -2626,20 +2727,37 @@
             content.innerHTML = '<div class="referral-list-empty">You haven\'t referred anyone yet. Share your referral link to start earning!</div>';
           } else {
             let html = '';
+            const promises = [];
+            
             snapshot.forEach(child => {
               const referredUser = child.val();
-              html += `
-                <div class="referral-list-item">
-                  <img src="${referredUser.avatar || userAvatar}" class="referral-list-avatar" alt="${referredUser.name}" />
-                  <div class="referral-list-info">
-                    <div class="referral-list-name">${referredUser.name || 'Unknown'}</div>
-                    <div class="referral-list-id">ID: ${child.key}</div>
-                    <div class="referral-list-balance">${referredUser.balance || 0} SHB</div>
-                  </div>
-                </div>
-              `;
+              const referralUserId = child.key;
+              
+              // Get commission earned from this specific referral
+              const commissionPromise = db.ref('users/' + userId + '/referralCommissions/' + referralUserId)
+                .once('value')
+                .then(commissionSnap => {
+                  const commission = commissionSnap.val() || 0;
+                  
+                  html += `
+                    <div class="referral-list-item">
+                      <img src="${referredUser.avatar || userAvatar}" class="referral-list-avatar" alt="${referredUser.name}" />
+                      <div class="referral-list-info">
+                        <div class="referral-list-name">${referredUser.name || 'Unknown'}</div>
+                        <div class="referral-list-id">ID: ${referralUserId}</div>
+                        <div class="referral-list-balance">${referredUser.balance || 0} SHB</div>
+                        <div class="referral-list-commission">💰 Commission Earned: ${commission} SHB</div>
+                      </div>
+                    </div>
+                  `;
+                });
+              
+              promises.push(commissionPromise);
             });
-            content.innerHTML = html;
+            
+            Promise.all(promises).then(() => {
+              content.innerHTML = html;
+            });
           }
           
           modal.style.display = 'flex';
@@ -2657,6 +2775,17 @@
             </div>
           `;
         });
+        
+        // Calculate total commission earnings
+        let totalCommission = 0;
+        if (userData && userData.referralCommissions) {
+          Object.values(userData.referralCommissions).forEach(commission => {
+            totalCommission += commission || 0;
+          });
+        }
+        
+        const signupBonus = referralCount * 5000;
+        const totalReferralEarnings = signupBonus + totalCommission;
         
         const html = `
           <div class="profile-main">
@@ -2705,8 +2834,8 @@
                   <div class="referral-stat-value">${referralCount}</div>
                 </div>
                 <div class="referral-stat">
-                  <div class="referral-stat-label">Earnings</div>
-                  <div class="referral-stat-value">${referralCount * 5000}</div>
+                  <div class="referral-stat-label">Total Earnings</div>
+                  <div class="referral-stat-value">${totalReferralEarnings}</div>
                 </div>
               </div>
               <button class="btn-view-referrals" id="viewReferralsBtn">View My Referrals</button>
