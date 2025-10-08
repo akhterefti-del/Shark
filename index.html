@@ -1537,8 +1537,8 @@
     let rankingListener = null;
     let referralCount = 0;
     let referralListener = null;
-    let pendingTaskRewards = {}; // Track tasks being processed
-    let totalReferralCommission = 0; // Track total commission earned
+    let pendingTaskRewards = {};
+    let totalReferralCommission = 0;
     
     // Utility Functions
     function now() {
@@ -1614,55 +1614,56 @@
       return true;
     }
     
-    // NEW: Function to award referral commission
+    // FIXED: Referral Commission Function - Only for Ad Earnings
     function awardReferralCommission(earnedAmount) {
-      if (!userData.referredBy) return; // No referrer
+      if (!userData.referredBy) {
+        console.log('No referrer for this user');
+        return;
+      }
       
       const commission = Math.floor(earnedAmount * 0.2); // 20% commission
       const referrerId = userData.referredBy;
       
-      // Update referrer's balance
-      db.ref('users/' + referrerId).once('value').then(snap => {
-        if (snap.exists()) {
-          const referrerData = snap.val();
-          const newBalance = (referrerData.balance || 0) + commission;
-          
-          // Update referrer's balance and commission tracking
-          const updates = {
-            balance: newBalance,
-            lastUpdated: now()
-          };
-          
-          // Track commission per referral
-          if (!referrerData.referralCommissions) {
-            referrerData.referralCommissions = {};
-          }
-          if (!referrerData.referralCommissions[userId]) {
-            referrerData.referralCommissions[userId] = 0;
-          }
-          referrerData.referralCommissions[userId] += commission;
-          updates.referralCommissions = referrerData.referralCommissions;
-          
-          // Track total commission
-          if (!referrerData.totalReferralCommission) {
-            referrerData.totalReferralCommission = 0;
-          }
-          referrerData.totalReferralCommission += commission;
-          updates.totalReferralCommission = referrerData.totalReferralCommission;
-          
-          db.ref('users/' + referrerId).update(updates);
-          
-          console.log(`Awarded ${commission} SHB commission to referrer ${referrerId}`);
-        }
-      });
+      console.log(`Awarding ${commission} SHB commission to referrer ${referrerId} for ${earnedAmount} SHB earned`);
       
-      // Update current user's commission tracking
-      if (!userData.referralCommissions) {
-        userData.referralCommissions = {};
-      }
-      if (!userData.referralCommissions[userId]) {
-        userData.referralCommissions[userId] = 0;
-      }
+      // Use transaction to ensure atomic update
+      const referrerBalanceRef = db.ref('users/' + referrerId + '/balance');
+      const referrerCommissionRef = db.ref('users/' + referrerId + '/referralCommissions/' + userId);
+      const referrerTotalCommissionRef = db.ref('users/' + referrerId + '/totalReferralCommission');
+      
+      // Update referrer's balance
+      referrerBalanceRef.transaction((currentBalance) => {
+        return (currentBalance || 0) + commission;
+      }).then(() => {
+        console.log(`Referrer balance updated successfully`);
+        
+        // Update commission tracking for this specific referral
+        referrerCommissionRef.transaction((currentCommission) => {
+          return (currentCommission || 0) + commission;
+        });
+        
+        // Update total commission
+        referrerTotalCommissionRef.transaction((totalCommission) => {
+          return (totalCommission || 0) + commission;
+        });
+        
+        // Update last updated timestamp
+        db.ref('users/' + referrerId).update({
+          lastUpdated: now()
+        });
+        
+        // Log the commission transaction
+        db.ref('admin/commissionLog').push({
+          referrerId: referrerId,
+          referredUserId: userId,
+          amount: commission,
+          earnedAmount: earnedAmount,
+          timestamp: now(),
+          type: 'ad_earning'
+        });
+      }).catch((error) => {
+        console.error('Error awarding commission:', error);
+      });
     }
     
     function showReferralWelcome(referrerId) {
@@ -1955,8 +1956,6 @@
           balance += offlineIncome;
           if (offlineIncome > 0) {
             notify(`Earned ${offlineIncome} SHB while offline!`);
-            // Award commission for offline income
-            awardReferralCommission(offlineIncome);
           }
         }
         
@@ -2118,9 +2117,6 @@
         booster.energy -= tapCount;
         coinsEarned += tapCount;
         
-        // Award referral commission for tapping
-        awardReferralCommission(tapCount);
-        
         updateUserData({
           balance: coinsEarned,
           energy: booster.energy
@@ -2185,9 +2181,6 @@
       if (booster.incomeBooster) {
         incomeTimer = setInterval(() => {
           coinsEarned++;
-          
-          // Award referral commission for passive income
-          awardReferralCommission(1);
           
           updateUserData({ balance: coinsEarned });
           
@@ -2442,6 +2435,7 @@
       
       document.getElementById('main-content').innerHTML = html;
       
+      // FIXED: Ad watching with commission
       document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
         
@@ -2453,10 +2447,11 @@
             adLoading = false;
             document.getElementById('showAdBtn').textContent = 'Watch Ad';
             
-            coinsEarned += 500;
+            const adReward = 500;
+            coinsEarned += adReward;
             
-            // Award referral commission for ad watching
-            awardReferralCommission(500);
+            // CRITICAL: Award referral commission for ad watching
+            awardReferralCommission(adReward);
             
             adStats.today++;
             adStats.thisWeek++;
@@ -2500,9 +2495,6 @@
         if (milestone100Unlocked && !milestone100Claimed) {
           coinsEarned += 5000;
           
-          // Award referral commission for milestone
-          awardReferralCommission(5000);
-          
           userData.milestones.milestone100Claimed = true;
           
           updateUserData({
@@ -2519,9 +2511,6 @@
         if (milestone200Unlocked && !milestone200Claimed) {
           coinsEarned += 10000;
           
-          // Award referral commission for milestone
-          awardReferralCommission(10000);
-          
           userData.milestones.milestone200Claimed = true;
           
           updateUserData({
@@ -2537,9 +2526,6 @@
       document.getElementById('claim500').addEventListener('click', () => {
         if (milestone500Unlocked && !milestone500Claimed) {
           coinsEarned += 20000;
-          
-          // Award referral commission for milestone
-          awardReferralCommission(20000);
           
           userData.milestones.milestone500Claimed = true;
           
@@ -2661,63 +2647,46 @@
             const taskId = this.dataset.taskId;
             const task = tasks[taskId];
             
-            // If task is already completed, just open the link
             if (userData.completedTasks && userData.completedTasks[taskId]) {
               window.open(task.link, '_blank');
               return;
             }
             
-            // Check if this task is already being processed
             if (pendingTaskRewards[taskId]) {
               notify('Task reward is already being processed!');
               return;
             }
             
-            // Disable button immediately to prevent multiple clicks
             this.disabled = true;
             this.textContent = 'Processing...';
             
-            // Mark task as pending
             pendingTaskRewards[taskId] = true;
             
-            // Open the task link
             window.open(task.link, '_blank');
             
-            // Notify user about the 10-second wait
             notify('Complete the task. Reward will be added in 10 seconds...', 3000);
             
-            // Set timeout for 10 seconds
             setTimeout(() => {
-              // Double-check that task hasn't been completed yet (in case of race condition)
               if (userData.completedTasks && userData.completedTasks[taskId]) {
                 delete pendingTaskRewards[taskId];
                 return;
               }
               
-              // Add reward
               const taskAmount = parseInt(task.amount);
               coinsEarned += taskAmount;
               
-              // Award referral commission for task completion
-              awardReferralCommission(taskAmount);
-              
-              // Mark task as completed
               if (!userData.completedTasks) userData.completedTasks = {};
               userData.completedTasks[taskId] = true;
               
-              // Update database
               updateUserData({
                 balance: coinsEarned,
                 completedTasks: userData.completedTasks
               });
               
-              // Remove from pending
               delete pendingTaskRewards[taskId];
               
-              // Notify user
               notify(`Earned ${task.amount} SHB!`);
               
-              // Re-render the earn section to update UI
               renderEarn();
             }, 10000);
           });
@@ -2742,7 +2711,6 @@
               const referredUser = child.val();
               const referredUserId = child.key;
               
-              // Get commission earned from this specific referral
               const commissionFromUser = userData.referralCommissions && userData.referralCommissions[referredUserId] 
                 ? userData.referralCommissions[referredUserId] 
                 : 0;
@@ -2898,9 +2866,6 @@
             if (snap.exists()) {
               const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
               coinsEarned += amount;
-              
-              // Award referral commission for redeem code
-              awardReferralCommission(amount);
               
               updateUserData({ balance: coinsEarned });
               db.ref('redeemCodes/' + code).remove();
